@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopper Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Section - Team Member 1 Contribution -->
+    <header class="header">
+        <div class="container">
+            <h1>Shopper Management System</h1>
+            <div class="team-info">
+                <p><strong>Group Project - IST 256</strong></p>
+                <p>Team Members: John Smith | Jane Doe | Mike Johnson | Sarah Williams</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content - Multiple Team Member Contributions -->
+    <main class="container">
+        <section class="intro-section">
+            <h2>Welcome to the Shopper Management System</h2>
+            <p>This application allows you to manage shopper information including their names, email addresses, and membership status.</p>
+        </section>
+
+        <!-- Add Shopper Form - Team Member 2 Contribution -->
+        <section class="form-section" id="addShopperSection">
+            <h2>Add New Shopper</h2>
+            <div class="contributor-badge">Developed by: Jane Doe</div>
+            <form id="shopperForm">
+                <div class="form-group">
+                    <label for="shopperName">Shopper Name:</label>
+                    <input type="text" id="shopperName" name="shopperName" required 
+                           placeholder="Enter shopper name">
+                </div>
+                <div class="form-group">
+                    <label for="shopperEmail">Email:</label>
+                    <input type="email" id="shopperEmail" name="shopperEmail" required 
+                           placeholder="shopper@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="membershipType">Membership Type:</label>
+                    <select id="membershipType" name="membershipType" required>
+                        <option value="">Select membership type</option>
+                        <option value="Basic">Basic</option>
+                        <option value="Premium">Premium</option>
+                        <option value="VIP">VIP</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Shopper</button>
+            </form>
+        </section>
+
+        <!-- Shopper List - Team Member 3 Contribution -->
+        <section class="list-section" id="shopperListSection">
+            <h2>Shopper Directory</h2>
+            <div class="contributor-badge">Developed by: Mike Johnson</div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search shoppers..." 
+                       class="search-input">
+            </div>
+            <div id="shopperList" class="shopper-list">
+                <!-- Shoppers will be displayed here dynamically -->
+            </div>
+        </section>
+
+        <!-- Statistics Section - Team Member 4 Contribution -->
+        <section class="stats-section">
+            <h2>Shopper Statistics</h2>
+            <div class="contributor-badge">Developed by: Sarah Williams</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Shoppers</h3>
+                    <p class="stat-number" id="totalShoppers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Basic Members</h3>
+                    <p class="stat-number" id="basicMembers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Premium Members</h3>
+                    <p class="stat-number" id="premiumMembers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>VIP Members</h3>
+                    <p class="stat-number" id="vipMembers">0</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer - Team Member 1 Contribution -->
+    <footer class="footer">
+        <div class="container">
+            <div class="contribution-summary">
+                <h3>Project Contributions</h3>
+                <ul>
+                    <li><strong>John Smith:</strong> Project structure, HTML layout, header/footer design</li>
+                    <li><strong>Jane Doe:</strong> Add Shopper form implementation and validation</li>
+                    <li><strong>Mike Johnson:</strong> Shopper listing, search functionality, and CRUD operations</li>
+                    <li><strong>Sarah Williams:</strong> Statistics dashboard, CSS styling, and responsive design</li>
+                </ul>
+            </div>
+            <p class="copyright">&copy; 2026 IST 256 Group Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
