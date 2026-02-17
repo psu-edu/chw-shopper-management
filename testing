@@ -1,2 +1,20 @@
 gay
 https://prod.liveshare.vsengsaas.visualstudio.com/join?F47DE73219C996F0D9FEDC5B524EA08EAACE
+hi hello
+
+
+All group members MUST contribute. If your name does not appear on the cover page or in the document section then you have not contributed and will receive a zero for this assignment. Breakup the development work for this assignment so that each group member is assigned a task. Each section of the PDF document will show the team member author who contributed to the following tasks. Include all the coding effort and screen shots of web page rendering in the Web browser.
+
+HTML (Page Structure) Web Storefront: Shopper Management (will handle the new/update shopper details form)  Web Page
+
+CSS (Page Style and Cosmetics) Web Storefront: Shopper Management Web Page
+
+Bootstrap (Professional look) Web Storefront: Shopper Management Web Page
+
+JavaScript (page behaviors and field integrity checks) Web Storefront: Shopper
+Management Web Page
+
+JSON Shopper Document collection (containing the details from the new/update shopper details form): the Shopper Management Web Page
+
+Shopper details: shopper email address (required), shopper name (required), shopped contact phone number (optional), shopper age (required), shopper address (required).
+Rubric

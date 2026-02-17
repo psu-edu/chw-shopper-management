@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, intial-scale=1"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./styles.css"/>
+    </head>
+    <body>
+<form class="needs-validation" novalidate>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="userName" placeholder="Username" required>
+                    <div class="invalid-feedback">Invalid.</div>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="password" placeholder="Password (min 8 chars)" minlength="8" required>
+                    <div class="invalid-feedback">Invalid</div>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="Age" placeholder="Age" required>
+                    <div class="invalid-feedback">Invalid</div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="phone" placeholder="Phone Number (optional)">
+                    <div class="invalid-feedback">Invalid</div>
+                </div>
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="Email" required>
+                    <div class="invalid-feedback">Invalid</div>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="address" placeholder="Address (optional)">
+                    <div class="invalid-feedback">Invalid</div>
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-red">SIGN UP</button>
+    </form>
+    </body>
