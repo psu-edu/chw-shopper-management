@@ -1,6 +1,27 @@
+/* Bootstrap handles styling*/
 body {
+    margin: 0;
     background-color: #f2f2f2;
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', monospace;
 }
 
-.card
+.title {
+    font-size: x-large;
+    stroke: black;
+    text-shadow: #1111 0.2px;
+}
+
+.Sub-title {
+    font-size: medium;
+    stroke:color-mix(in hsl shorter hue, color percentage, color percentage)
+
+}
+
+.text-white {
+
+}
+
+
+.navbar-nav .flex-row {
+
+}
