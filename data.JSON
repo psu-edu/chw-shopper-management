@@ -1,4 +1,6 @@
 [
+    {"comment": "Who worked on it"},
+
     {
         "name": "Karim Alsayed",
         "phone": "111-111-1234",
@@ -8,5 +10,10 @@
         "name": "christian Merfert",
         "phone": "111-111-2134",
         "email": "cjm8340@psu.edu"
+    },
+    {
+        "name": "Aiden Donahue",
+        "phone": "111-111-2134",
+        "email": "????@psu.edu"
     }
 ]
