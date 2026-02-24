@@ -1,27 +1,42 @@
-/* Bootstrap handles styling*/
-body {
-    margin: 0;
-    background-color: #f2f2f2;
-    font-family: 'Courier New', monospace;
+@font-face{ font-family: 'custfont';
+    src: url('Bold_Dragon_Bold.ttf');
+    font-weight: normal;
+    font-style: normal;
 }
 
-.title {
-    font-size: x-large;
-    stroke: black;
-    text-shadow: #1111 0.2px;
+h2{font-family: 'custfont', Arial, sans-serif;
+color: rgb(23, 0, 155);
+text-align: center;
+font-size: 35px;}
+
+.header {
+  position: fixed;
+  top: 15px;
+  right: 0;
+  left: 0;
+  height: 75px;
+}
+.img-logo {
+    position: fixed;
+    top: 15px;
+    left: 5px;
+    right: 0;
+}
+.container {
+  margin-top: -20px; 
+  padding: 20px; 
+  margin-left: 150px;
 }
 
-.Sub-title {
-    font-size: medium;
-    stroke:color-mix(in hsl shorter hue, color percentage, color percentage)
 
-}
-
-.text-white {
-
-}
+h1 {font-family: 'custfont', Arial, serif;
+color: red;
+text-align: center;
+font-size: 75px;}
 
 
-.navbar-nav .flex-row {
-
+.main-sec { 
+    position: fixed;
+    left: 10px;
+    top: 300px;
 }
