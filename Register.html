@@ -9,11 +9,12 @@
         <link rel="stylesheet" href="./styles.css"/>
     </head>
     <body>
+       
 <form class="needs-validation" novalidate>
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="userName" placeholder="Username" required>
+                    <input type="text" class="form-control" id="name" placeholder="Name" required>
                     <div class="invalid-feedback">Invalid.</div>
                 </div>
                 <div class="mb-3">
@@ -21,22 +22,22 @@
                     <div class="invalid-feedback">Invalid</div>
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" id="Age" placeholder="Age" required>
+                    <input type="number" class="form-control" id="Age" placeholder="Age" required>
                     <div class="invalid-feedback">Invalid</div>
                 </div>
             </div>
 
             <div class="col-md-6">
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="phone" placeholder="Phone Number (optional)">
+                    <input type="number" class="form-control" id="phone" placeholder="Phone Number (optional)">
                     <div class="invalid-feedback">Invalid</div>
                 </div>
                 <div class="mb-3">
-                    <input type="email" class="form-control" id="email" placeholder="Email" required>
+                    <input type="text" class="form-control" id="email" placeholder="Email" required>
                     <div class="invalid-feedback">Invalid</div>
                 </div>
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="address" placeholder="Address (optional)">
+                    <input type="text" class="form-control" id="address" placeholder="Address" required>
                     <div class="invalid-feedback">Invalid</div>
                 </div>
             </div>
@@ -44,4 +45,26 @@
         
         <button type="submit" class="btn btn-red">Sign up</button>
     </form>
+
+    
+    <script>
+    const NValue = document.getElementById('userName').value;
+    const PValue = document.getElementById('password').value;
+    const AValue = document.getElementById('address').value;
+    const EValue = document.getElementById('email').value;
+    const AgeValue = parseInt(document.getElementById('Age').value);
+    const PhValue = parseInt(document.getElementById('phone').value);
+
+    var JSONObject = {
+            "Customer": [
+                {"name": NValue},
+                {"password": PValue},
+                {"address": AValue},
+                {"email": EValue},
+                {"age": AgeValue},
+                {"phone": PhValue}
+            ]
+        }
+    </script>
+
     </body>
