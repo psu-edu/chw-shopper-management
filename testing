@@ -27,3 +27,31 @@ Rubric
 --Karim Alsayed: 
 --//Working on JSON and CSS files.
 
+
+<button type="button" onclick="saveAndRedirect()" class="btn btn-red">Sign up</button>
+
+<script>
+function saveAndRedirect() {
+    const NValue = document.getElementById('name').value;
+    const PValue = document.getElementById('password').value;
+    const AValue = document.getElementById('address').value;
+    const EValue = document.getElementById('email').value;
+    const AgeValue = document.getElementById('Age').value;
+    const PhValue = document.getElementById('phone').value;
+
+    var JSONObject = {
+        "Customer": [
+            {"name": NValue},
+            {"password": PValue},
+            {"address": AValue},
+            {"email": EValue},
+            {"age": AgeValue},
+            {"phone": PhValue}
+        ]
+    };
+
+    localStorage.setItem('userData', JSON.stringify(JSONObject));
+
+    window.location.href = "homepage.html";
+}
+</script>
