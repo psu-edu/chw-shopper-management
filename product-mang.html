@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./styles.css"/>
+    </head>
+    <body>
+
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand fw-semibold" href="Homepage.html">Confused Hardware</a>
+          <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="Homepage.html">Home</a>
+            <a class="nav-link active" aria-current="page" href="ProductManagement.html">Product Management</a>
+            <a class="nav-link" href="Register.html">Shopper Signup</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container mt-5">
+        <div class="card p-4 shadow">
+          <h3 class="text-center mb-4">Product Management</h3>
+
+          <form id="productForm" class="needs-validation" novalidate autocomplete="off">
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <input type="text" class="form-control" id="productId" placeholder="Product ID" required>
+                  <div class="invalid-feedback">Product ID is required.</div>
+                </div>
+                <div class="mb-3">
+                  <input type="text" class="form-control" id="productDescription" placeholder="Product Description" required>
+                  <div class="invalid-feedback">Product Description is required.</div>
+                </div>
+                <div class="mb-3">
+                  <input type="text" class="form-control" id="productCategory" placeholder="Product Category" required>
+                  <div class="invalid-feedback">Product Category is required.</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <input type="text" class="form-control" id="productUOM" placeholder="Unit of Measure (e.g. each, kg, box)" required>
+                  <div class="invalid-feedback">Unit of Measure is required.</div>
+                </div>
+                <div class="mb-3">
+                  <input type="number" class="form-control" id="productPrice" placeholder="Price ($)" min="0" step="0.01" required>
+                  <div class="invalid-feedback">Product Price is required.</div>
+                </div>
+                <div class="mb-3">
+                  <input type="number" class="form-control" id="productWeight" placeholder="Weight (kg) - optional" min="0" step="0.01">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-dark">Save Product</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">Clear</button>
+            </div>
+          </form>
+
+          <div id="successMsg" class="alert alert-success mt-3 d-none">Product saved successfully!</div>
+        </div>
+
+        <div class="card p-4 shadow mt-4">
+          <h5 class="mb-3">Saved Products</h5>
+          <pre id="jsonDisplay" class="bg-light p-3 rounded" style="font-size: 0.85rem; max-height: 300px; overflow-y: auto;">No products saved yet.</pre>
+        </div>
+      </div>
+
+      <script>
+        const form = document.getElementById('productForm');
+
+        form.addEventListener('submit', event => {
+          event.preventDefault();
+
+          if (!form.checkValidity()) {
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+          }
+
+          saveProduct();
+          form.classList.remove('was-validated');
+        });
+
+        function saveProduct() {
+          const product = {
+            "productId":          document.getElementById('productId').value,
+            "productDescription": document.getElementById('productDescription').value,
+            "productCategory":    document.getElementById('productCategory').value,
+            "productUOM":         document.getElementById('productUOM').value,
+            "productPrice":       parseFloat(document.getElementById('productPrice').value),
+            "productWeight":      document.getElementById('productWeight').value || null
+          };
+
+          // Load existing products or start fresh
+          const existing = localStorage.getItem('productData');
+          const productList = existing ? JSON.parse(existing) : { "Products": [] };
+
+          // Check if product ID already exists - update if so
+          const idx = productList.Products.findIndex(p => p.productId === product.productId);
+          if (idx !== -1) {
+            productList.Products[idx] = product;
+          } else {
+            productList.Products.push(product);
+          }
+
+          localStorage.setItem('productData', JSON.stringify(productList));
+
+          document.getElementById('jsonDisplay').innerText = JSON.stringify(productList, null, 2);
+          document.getElementById('successMsg').classList.remove('d-none');
+          form.reset();
+
+          setTimeout(() => {
+            document.getElementById('successMsg').classList.add('d-none');
+          }, 3000);
+        }
+
+        function clearForm() {
+          form.reset();
+          form.classList.remove('was-validated');
+          document.getElementById('successMsg').classList.add('d-none');
+        }
+
+        // Load any existing products on page load
+        window.onload = function () {
+          const existing = localStorage.getItem('productData');
+          if (existing) {
+            document.getElementById('jsonDisplay').innerText = JSON.stringify(JSON.parse(existing), null, 2);
+          }
+        };
+      </script>
+
+    </body>
+</html>
