@@ -1,43 +1,4 @@
-@font-face{ font-family: 'custfont';
-    src: url('Bold_Dragon_Bold.ttf');
-    font-weight: normal;
-    font-style: normal;
-}
-
-h2{font-family: 'custfont', Arial, sans-serif;
-color: rgb(23, 0, 155);
-text-align: center;
-font-size: 35px;
-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-.header {
-  position: fixed;
-  top: 15px;
-  right: 0;
-  left: 0;
-  height: 75px;
-}
-.img-logo {
-    position: fixed;
-    top: 15px;
-    left: 5px;
-    right: 0;
-}
-.container {
-  margin-top: -20px; 
-  padding: 20px; 
-  margin-left: 150px;
-}
-
-
-h1 {font-family: 'custfont', Arial, serif;
-color: red;
-text-align: center;
-font-size: 75px;
-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);}
-
-.main-sec { 
-    position: fixed;
-    left: 10px;
-    top: 300px;
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
 }

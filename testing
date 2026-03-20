@@ -1,5 +1,6 @@
 
 https://prod.liveshare.vsengsaas.visualstudio.com/join?D19E5A85EA21F2714005C75858F4C47E5D0B
+
 hi hello
 
 
@@ -28,30 +29,22 @@ Rubric
 --//Working on JSON and CSS files.
 
 
-<button type="button" onclick="saveAndRedirect()" class="btn btn-red">Sign up</button>
 
-<script>
-function saveAndRedirect() {
-    const NValue = document.getElementById('name').value;
-    const PValue = document.getElementById('password').value;
-    const AValue = document.getElementById('address').value;
-    const EValue = document.getElementById('email').value;
-    const AgeValue = document.getElementById('Age').value;
-    const PhValue = document.getElementById('phone').value;
 
-    var JSONObject = {
-        "Customer": [
-            {"name": NValue},
-            {"password": PValue},
-            {"address": AValue},
-            {"email": EValue},
-            {"age": AgeValue},
-            {"phone": PhValue}
-        ]
-    };
+Group Project: Product Management Web Page  
+Due Monday by 11:59pm  Points 100  Submitting a text entry box or a file upload
+All group members MUST contribute. If your name does not appear on the cover page or in the document section then you have not contributed and will receive a zero for this assignment. Break up the development work for this assignment so that each group member is assigned a task. Each section of the PDF document will show the team member author who contributed to the following tasks. Include all the coding effort and screen shots of web page rendering in the Web browser.  For now the data collection will be a JSON document that will contain Product objects for the storefront.
 
-    localStorage.setItem('userData', JSON.stringify(JSONObject));
+HTML (Page Structure) Web Storefront: Product Management (will handle the new/update product details form)  Web Page
+CSS (Page Style and Cosmetics) Web Storefront: Product Management Web Page
+Bootstrap (Professional look) Web Storefront: Product Management Web Page
+JavaScript (page behaviors and field integrity checks) Web Storefront: Product Management Web Page
+JSON Product Document (containing the details from the new/update product details form): the Product Management Web Page
+jQuery (Search and update the JSON product document) Web Storefront: Product Management Web Page
+Product Details: Product Id (required), Product Description (required), Product Category (required), Product Unit of Measure (required), Product Price (required), and Product Weight (optional) 
 
-    window.location.href = "homepage.html";
-}
-</script>
+
+
+//Mar 20//
+--Karim Alsayed
+--Finished JSON file #product.json / Working on HTML.

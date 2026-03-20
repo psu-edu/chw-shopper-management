@@ -1,0 +1,28 @@
+{
+    "Products": [
+        {
+            "productId": "Rassbperry Pi 4",
+            "productDescription": "Rassbperry Pi 4 8G RAM",
+            "productCategory": "Rassbperry Pi",
+            "productUOM": "each",
+            "productPrice": 89.99,
+            "productWeight": 0.4
+        },
+        {
+            "productId": "Rassbperry Pi 5",
+            "productDescription": "Rassbperry Pi 5 4G RAM",
+            "productCategory": "Rassbperry Pi",
+            "productUOM": "each",
+            "productPrice": 60.99,
+            "productWeight": 0.4
+        },
+        {
+            "productId": "Rassbperry Pi Zero 2 W",
+            "productDescription": "Rassbperry Pi Zero 2 W",
+            "productCategory": "Rassbperry Pi",
+            "productUOM": "each",
+            "productPrice": 15.99,
+            "productWeight": 0.1
+        }
+    ]
+}
