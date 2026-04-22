@@ -35,29 +35,26 @@
             .ad-block span {font-size: 1.5rem;}
             #cart-toast {position: fixed; bottom: 1.5rem; right: 1.5rem; background: #212529; color: #fff; padding: 0.65rem 1.1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 9999;}
             #cart-toast.show {opacity: 1;}
-            @media (max-width: 900px) {
-                #shop-wrapper {grid-template-columns: 1fr;}
-                #filter-sidebar, #ad-sidebar {position: static;}
-                #ad-sidebar {flex-direction: row;}
-                .ad-block {flex: 1;}
-            }
+            @media (max-width: 900px) { #shop-wrapper {grid-template-columns: 1fr;} #filter-sidebar, #ad-sidebar {position: static;} #ad-sidebar {flex-direction: row;} .ad-block {flex: 1;} }
         </style>
     </head>
     <body>
- 
+
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
             <div class="container position-relative">
                 <a class="navbar-brand fw-semibold position-absolute start-50 translate-middle-x" href="Homepage.html">Confused Hardware</a>
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link active" aria-current="page" href="Shopping.html">Shop</a>
                     <a class="nav-link" href="#">Search</a>
+                    <a class="nav-link" href="product-mang.html">Product Management</a>
+                    <a class="nav-link" href="add-item.html">Add Item</a>
                     <a class="nav-link" href="Register.html">Sign In</a>
                 </div>
             </div>
         </nav>
- 
+
         <div id="shop-wrapper">
- 
+
             <div id="filter-sidebar">
                 <h6>Filters</h6>
                 <div class="filter-group">
@@ -83,7 +80,7 @@
                 </div>
                 <button class="btn btn-sm btn-outline-secondary w-100 mt-1" onclick="resetFilters()">Reset</button>
             </div>
- 
+
             <div id="product-grid">
                 <div class="product-card" id="card-pi4">
                     <div class="product-img">RPi4</div>
@@ -110,7 +107,7 @@
                     <button class="btn-add" onclick="addToCart('Raspberry Pi Zero 2 W')">Add to Cart</button>
                 </div>
             </div>
- 
+
             <div id="ad-sidebar">
                 <div class="ad-block">
                     <span>Ad</span>
@@ -121,64 +118,40 @@
                     Advertisement
                 </div>
             </div>
- 
+
         </div>
- 
+
         <div id="cart-toast">Added to cart!</div>
- 
+
         <script>
-            function updatePriceDisplay(val) {
-                document.getElementById('price-display').textContent = 'Up to $' + parseFloat(val).toFixed(2);
-            }
- 
+            function updatePriceDisplay(val) { document.getElementById('price-display').textContent = 'Up to $' + parseFloat(val).toFixed(2); }
+
             function applyFilters() {
-                var maxPrice = parseFloat(document.getElementById('price-range').value);
-                var sort = document.getElementById('sort-select').value;
-                var catChecked = document.getElementById('cat-raspberry-pi').checked;
- 
-                var cards = [
-                    {id: 'card-pi4', price: 89.99, name: 'Raspberry Pi 4', cat: 'Raspberry Pi'},
-                    {id: 'card-pi5', price: 60.99, name: 'Raspberry Pi 5', cat: 'Raspberry Pi'},
-                    {id: 'card-pizero', price: 15.99, name: 'Raspberry Pi Zero 2 W', cat: 'Raspberry Pi'}
-                ];
- 
-                cards.forEach(function(c) {
-                    var show = c.price <= maxPrice && (c.cat === 'Raspberry Pi' ? catChecked : true);
-                    document.getElementById(c.id).style.display = show ? 'flex' : 'none';
-                });
- 
+                var maxPrice = parseFloat(document.getElementById('price-range').value); var sort = document.getElementById('sort-select').value; var catChecked = document.getElementById('cat-raspberry-pi').checked;
+
+                var cards = [ {id: 'card-pi4', price: 89.99, name: 'Raspberry Pi 4', cat: 'Raspberry Pi'}, {id: 'card-pi5', price: 60.99, name: 'Raspberry Pi 5', cat: 'Raspberry Pi'}, {id: 'card-pizero', price: 15.99, name: 'Raspberry Pi Zero 2 W', cat: 'Raspberry Pi'} ];
+
+                cards.forEach(function(c) { var show = c.price <= maxPrice && (c.cat === 'Raspberry Pi' ? catChecked : true); document.getElementById(c.id).style.display = show ? 'flex' : 'none'; });
+
                 if (sort === 'price-asc') cards.sort(function(a,b) {return a.price - b.price;});
                 if (sort === 'price-desc') cards.sort(function(a,b) {return b.price - a.price;});
                 if (sort === 'name-asc') cards.sort(function(a,b) {return a.name.localeCompare(b.name);});
- 
+
                 var grid = document.getElementById('product-grid');
-                cards.forEach(function(c) {
-                    grid.appendChild(document.getElementById(c.id));
-                });
+                cards.forEach(function(c) { grid.appendChild(document.getElementById(c.id)); });
             }
- 
-            function resetFilters() {
-                document.getElementById('price-range').value = 110;
-                updatePriceDisplay(110);
-                document.getElementById('sort-select').value = 'default';
-                document.getElementById('cat-raspberry-pi').checked = true;
-                applyFilters();
-            }
- 
+
+            function resetFilters() { document.getElementById('price-range').value = 110; updatePriceDisplay(110); document.getElementById('sort-select').value = 'default'; document.getElementById('cat-raspberry-pi').checked = true; applyFilters(); }
+
             function addToCart(productId) {
                 var cart = JSON.parse(localStorage.getItem('cartData') || '{"items":[]}');
                 var existing = cart.items.find(function(i) {return i.productId === productId;});
-                if (existing) {
-                    existing.qty = (existing.qty || 1) + 1;
-                } else {
-                    cart.items.push({productId: productId, qty: 1});
-                }
+                if (existing) { existing.qty = (existing.qty || 1) + 1; } else { cart.items.push({productId: productId, qty: 1}); }
                 localStorage.setItem('cartData', JSON.stringify(cart));
-                document.getElementById('cart-toast').textContent = '"' + productId + '" added to cart!';
-                document.getElementById('cart-toast').classList.add('show');
+                document.getElementById('cart-toast').textContent = '"' + productId + '" added to cart!'; document.getElementById('cart-toast').classList.add('show');
                 setTimeout(function() {document.getElementById('cart-toast').classList.remove('show');}, 2200);
             }
         </script>
- 
+
     </body>
 </html>

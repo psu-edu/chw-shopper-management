@@ -6,9 +6,11 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./styles.css"/>
+        <title>Product Management - Confused Hardware</title>
     </head>
     <body>
 
@@ -17,15 +19,18 @@
           <a class="navbar-brand fw-semibold" href="Homepage.html">Confused Hardware</a>
           <div class="navbar-nav ms-auto">
             <a class="nav-link" href="Homepage.html">Home</a>
-            <a class="nav-link active" aria-current="page" href="ProductManagement.html">Product Management</a>
+            <a class="nav-link" href="Shopping.html">Shop</a>
+            <a class="nav-link active" aria-current="page" href="product-mang.html">Product Management</a>
+            <a class="nav-link" href="add-item.html">Add Item</a>
             <a class="nav-link" href="Register.html">Shopper Signup</a>
           </div>
         </div>
       </nav>
 
       <div class="container mt-5">
-        <div class="card p-4 shadow">
-          <h3 class="text-center mb-4">Product Management</h3>
+
+        <div class="card p-4 shadow mb-4 d-none" id="editCard">
+          <h3 class="mb-4" id="formHeading">Edit Product</h3>
 
           <form id="productForm" class="needs-validation" novalidate autocomplete="off">
             <div class="row">
@@ -62,82 +67,136 @@
             </div>
 
             <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-dark">Save Product</button>
-              <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">Clear</button>
+              <button type="submit" class="btn btn-dark" id="saveBtn">Update Product</button>
+              <button type="button" class="btn btn-outline-secondary" id="cancelBtn">Cancel</button>
             </div>
           </form>
 
-          <div id="successMsg" class="alert alert-success mt-3 d-none">Product saved successfully!</div>
+          <div id="successMsg" class="alert alert-success mt-3 d-none"></div>
         </div>
 
-        <div class="card p-4 shadow mt-4">
-          <h5 class="mb-3">Saved Products</h5>
-          <pre id="jsonDisplay" class="bg-light p-3 rounded" style="font-size: 0.85rem; max-height: 300px; overflow-y: auto;">No products saved yet.</pre>
+        <div class="card p-4 shadow">
+          <h3 class="mb-3">Search &amp; Update Products</h3>
+
+          <div class="mb-3">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search by Product ID, Description, or Category...">
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle" id="productTable">
+              <thead class="table-dark">
+                <tr>
+                  <th>Product ID</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>UOM</th>
+                  <th>Price</th>
+                  <th>Weight</th>
+                  <th style="width: 140px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <tr><td colspan="7" class="text-center text-muted">Loading products...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="text-muted small mt-2" id="dataSourceNote"></div>
         </div>
+
+        <div class="card p-4 shadow mt-4 mb-5">
+          <h5 class="mb-3">Raw JSON Preview</h5>
+          <pre id="jsonDisplay" class="bg-light p-3 rounded" style="font-size: 0.85rem; max-height: 300px; overflow-y: auto;">No products loaded yet.</pre>
+        </div>
+
       </div>
 
       <script>
-        const form = document.getElementById('productForm');
+        $(function () {
+          const STORAGE_KEY = 'productData'; const INIT_FLAG = 'productDataInitialized'; let editingOriginalId = null;
 
-        form.addEventListener('submit', event => {
-          event.preventDefault();
-
-          if (!form.checkValidity()) {
-            event.stopPropagation();
-            form.classList.add('was-validated');
-            return;
+          function ensureDataLoaded(callback) {
+            if (localStorage.getItem(INIT_FLAG) === 'true') { callback(); return; }
+            $.getJSON('data.json')
+              .done(function (json) { localStorage.setItem(STORAGE_KEY, JSON.stringify(json)); localStorage.setItem(INIT_FLAG, 'true'); $('#dataSourceNote').text('Products initialized from data.json. All changes are now saved in your browser.'); callback(); })
+              .fail(function () { localStorage.setItem(STORAGE_KEY, JSON.stringify({ Products: [] })); localStorage.setItem(INIT_FLAG, 'true'); $('#dataSourceNote').text('Could not load data.json. Starting with an empty product list.'); callback(); });
           }
 
-          saveProduct();
-          form.classList.remove('was-validated');
+          function loadProducts() { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : { Products: [] }; }
+          function saveProducts(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+          function renderTable(filter) {
+            const data = loadProducts(); const $body = $('#productTableBody').empty(); const term = (filter || '').trim().toLowerCase();
+
+            const matches = data.Products.filter(function (p) {
+              if (!term) return true;
+              return ((p.productId || '').toLowerCase().includes(term) || (p.productDescription || '').toLowerCase().includes(term) || (p.productCategory || '').toLowerCase().includes(term));
+            });
+
+            if (matches.length === 0) {
+              const msg = term ? 'No products match your search.' : 'No products saved yet. Use the Add Item page to create one.';
+              $body.append($('<tr>').append($('<td colspan="7" class="text-center text-muted">').text(msg)));
+            } else {
+              matches.forEach(function (p) {
+                const $row = $('<tr>').attr('data-id', p.productId);
+                $row.append($('<td>').text(p.productId)); $row.append($('<td>').text(p.productDescription)); $row.append($('<td>').text(p.productCategory)); $row.append($('<td>').text(p.productUOM)); $row.append($('<td>').text('$' + Number(p.productPrice).toFixed(2))); $row.append($('<td>').text(p.productWeight != null && p.productWeight !== '' ? p.productWeight : '—'));
+
+                const $actions = $('<td>');
+                $('<button>').addClass('btn btn-sm btn-outline-primary me-1 edit-btn').text('Edit').appendTo($actions);
+                $('<button>').addClass('btn btn-sm btn-outline-danger delete-btn').text('Delete').appendTo($actions);
+                $row.append($actions); $body.append($row);
+              });
+            }
+
+            if (data.Products.length === 0) { $('#jsonDisplay').text('No products loaded yet.'); } else { $('#jsonDisplay').text(JSON.stringify(data, null, 2)); }
+          }
+
+          function showSuccess(message) { $('#successMsg').text(message).removeClass('d-none'); setTimeout(function () { $('#successMsg').addClass('d-none'); }, 2500); }
+
+          function closeEditForm() { $('#editCard').addClass('d-none'); $('#productForm')[0].reset(); $('#productForm').removeClass('was-validated'); editingOriginalId = null; }
+
+          $('#productForm').on('submit', function (event) {
+            event.preventDefault(); const form = this;
+            if (!form.checkValidity()) { event.stopPropagation(); $(form).addClass('was-validated'); return; }
+
+            const product = { productId: $('#productId').val().trim(), productDescription: $('#productDescription').val().trim(), productCategory: $('#productCategory').val().trim(), productUOM: $('#productUOM').val().trim(), productPrice: parseFloat($('#productPrice').val()), productWeight: $('#productWeight').val() !== '' ? parseFloat($('#productWeight').val()) : null };
+
+            const data = loadProducts();
+            const idx = data.Products.findIndex(function (p) { return p.productId === editingOriginalId; });
+            if (idx !== -1) { data.Products[idx] = product; } else { data.Products.push(product); }
+
+            saveProducts(data); showSuccess('Product "' + product.productId + '" updated.'); renderTable($('#searchBox').val()); setTimeout(closeEditForm, 800);
+          });
+
+          $('#cancelBtn').on('click', closeEditForm);
+
+          $('#searchBox').on('input', function () { renderTable($(this).val()); });
+
+          $('#productTableBody').on('click', '.edit-btn', function () {
+            const id = $(this).closest('tr').data('id');
+            const data = loadProducts();
+            const product = data.Products.find(function (p) { return String(p.productId) === String(id); });
+            if (!product) return;
+
+            $('#productId').val(product.productId); $('#productDescription').val(product.productDescription); $('#productCategory').val(product.productCategory); $('#productUOM').val(product.productUOM); $('#productPrice').val(product.productPrice); $('#productWeight').val(product.productWeight != null ? product.productWeight : '');
+
+            editingOriginalId = product.productId; $('#formHeading').text('Edit Product: ' + product.productId); $('#editCard').removeClass('d-none'); $('html, body').animate({ scrollTop: 0 }, 300);
+          });
+
+          $('#productTableBody').on('click', '.delete-btn', function () {
+            const id = $(this).closest('tr').data('id');
+            if (!confirm('Delete product "' + id + '"?')) return;
+
+            const data = loadProducts();
+            data.Products = data.Products.filter(function (p) { return String(p.productId) !== String(id); });
+            saveProducts(data);
+
+            if (String(editingOriginalId) === String(id)) closeEditForm();
+            showSuccess('Product "' + id + '" deleted.'); renderTable($('#searchBox').val());
+          });
+
+          ensureDataLoaded(function () { renderTable(''); });
         });
-
-        function saveProduct() {
-          const product = {
-            "productId":          document.getElementById('productId').value,
-            "productDescription": document.getElementById('productDescription').value,
-            "productCategory":    document.getElementById('productCategory').value,
-            "productUOM":         document.getElementById('productUOM').value,
-            "productPrice":       parseFloat(document.getElementById('productPrice').value),
-            "productWeight":      document.getElementById('productWeight').value || null
-          };
-
-          // Load existing products or start fresh
-          const existing = localStorage.getItem('productData');
-          const productList = existing ? JSON.parse(existing) : { "Products": [] };
-
-          // Check if product ID already exists - update if so
-          const idx = productList.Products.findIndex(p => p.productId === product.productId);
-          if (idx !== -1) {
-            productList.Products[idx] = product;
-          } else {
-            productList.Products.push(product);
-          }
-
-          localStorage.setItem('productData', JSON.stringify(productList));
-
-          document.getElementById('jsonDisplay').innerText = JSON.stringify(productList, null, 2);
-          document.getElementById('successMsg').classList.remove('d-none');
-          form.reset();
-
-          setTimeout(() => {
-            document.getElementById('successMsg').classList.add('d-none');
-          }, 3000);
-        }
-
-        function clearForm() {
-          form.reset();
-          form.classList.remove('was-validated');
-          document.getElementById('successMsg').classList.add('d-none');
-        }
-
-        // Load any existing products on page load
-        window.onload = function () {
-          const existing = localStorage.getItem('productData');
-          if (existing) {
-            document.getElementById('jsonDisplay').innerText = JSON.stringify(JSON.parse(existing), null, 2);
-          }
-        };
       </script>
 
     </body>
