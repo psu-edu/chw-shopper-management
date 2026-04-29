@@ -1,4 +1,4 @@
-/* Confused Fitness — shared styles */
+/* kinda gay style */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -9,7 +9,7 @@
 
 body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; display: flex; flex-direction: column; }
 
-/* ---- TOP BAR ---- */
+/* ---- agh ---- */
 .top { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: var(--pnl); border-bottom: 1px solid var(--bdr); }
 .brand { display: flex; align-items: center; gap: 12px; }
 .mark { width: 36px; height: 36px; background: var(--acc); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: white; letter-spacing: 1px; }
@@ -22,16 +22,16 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
 .rib { background: var(--acc); color: white; padding: 8px 18px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
 
-/* ---- LAYOUT ---- */
+/* ---- layout ---- */
 .lay { display: flex; flex: 1; }
 
-/* ---- SIDEBAR ---- */
+/* ---- sidebar ---- */
 .side { width: 200px; background: var(--pnl); border-right: 1px solid var(--bdr); padding: 24px 0; }
 .side a { display: block; padding: 12px 24px; color: var(--dim); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s; }
 .side a:hover { background: var(--pnlH); color: var(--txt); }
 .side a.on { color: var(--txt); border-left-color: var(--acc); background: var(--pnlH); }
 
-/* ---- MAIN GRID ---- */
+/* ---- grid ---- */
 .main { flex: 1; padding: 24px; display: grid; grid-template-columns: 1fr 1fr 2fr; grid-template-rows: 1fr 1fr auto; gap: 16px; }
 
 .quote { grid-column: 1; grid-row: 1 / 3; background: var(--pnl); border: 1px solid var(--bdr); padding: 32px 24px; display: flex; flex-direction: column; justify-content: center; }
@@ -49,7 +49,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .exS { margin-top: auto; display: flex; gap: 16px; font-size: 13px; }
 .exS span:first-child { color: var(--acc); font-weight: 700; }
 
-/* ---- CALENDAR ---- */
+/* ---- cal ---- */
 .cal { grid-column: 3; grid-row: 1 / 3; background: var(--pnl); border: 1px solid var(--bdr); padding: 24px; }
 .calH { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .calH h3 { font-size: 16px; font-weight: 700; }
@@ -64,7 +64,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .d.wo { background: rgba(255, 59, 59, 0.15); border-color: var(--acc); color: var(--acc); font-weight: 700; }
 .d.td { background: var(--acc); color: white; border-color: var(--acc); font-weight: 700; }
 
-/* ---- BOTTOM STRIP ---- */
+/* ---- bottom strip ---- */
 .bot { grid-column: 1 / 4; grid-row: 3; background: var(--pnl); border: 1px solid var(--bdr); padding: 20px 24px; display: flex; align-items: center; justify-content: space-around; gap: 24px; }
 .st { text-align: center; }
 .stV { font-size: 24px; font-weight: 800; color: var(--txt); }
@@ -72,7 +72,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .stL { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
 .stD { width: 1px; height: 32px; background: var(--bdr); }
 
-/* ---- ADD WORK PAGE ---- */
+/* ---- add wrk ---- */
 .awMain { flex: 1; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: stretch; }
 
 .filt { background: var(--pnl); border: 1px solid var(--bdr); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
@@ -109,7 +109,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .empty { padding: 40px 20px; text-align: center; color: var(--dim); font-size: 13px; border: 1px dashed var(--bdr); grid-column: 1 / -1; }
 .empty.sm { padding: 20px 12px; font-size: 12px; }
 
-/* ---- MODAL ---- */
+/* ---- modal ---- */
 .mdW { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
 .mdW.o { display: flex; }
 .md { background: var(--pnl); border: 1px solid var(--bdr); width: 100%; max-width: 420px; display: flex; flex-direction: column; }
@@ -124,7 +124,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .btnGh { background: transparent; color: var(--dim); border: 1px solid var(--bdr); padding: 10px 18px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
 .btnGh:hover { color: var(--acc); border-color: var(--acc); }
 
-/* ---- EDIT WORK PAGE ---- */
+/* ---- edit work ---- */
 .ewMain { flex: 1; padding: 24px; display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
 .ewL { background: var(--pnl); border: 1px solid var(--bdr); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
 .ewList { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; max-height: calc(100vh - 220px); }
@@ -157,7 +157,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
 .ewActs { display: flex; gap: 8px; }
 
-/* scrollbar — keep it subtle */
+/* scrollbar */
 .ewList::-webkit-scrollbar, .logHist::-webkit-scrollbar { width: 6px; }
 .ewList::-webkit-scrollbar-thumb, .logHist::-webkit-scrollbar-thumb { background: var(--bdr); }
 .ewList::-webkit-scrollbar-thumb:hover, .logHist::-webkit-scrollbar-thumb:hover { background: var(--acc); }
