@@ -1,0 +1,179 @@
+{
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Barbell Back Squat",
+      "muscle": "legs",
+      "equipment": "barbell",
+      "description": "Stand with the barbell across your upper back, feet shoulder-width apart. Squat down by bending your knees and hips, keeping your chest up, then drive through your heels to stand."
+    },
+    {
+      "id": 2,
+      "name": "Deadlift",
+      "muscle": "back",
+      "equipment": "barbell",
+      "description": "Stand with feet hip-width apart, barbell over mid-foot. Hinge at the hips, grip the bar, and lift by extending hips and knees while keeping your back flat."
+    },
+    {
+      "id": 3,
+      "name": "Bench Press",
+      "muscle": "chest",
+      "equipment": "barbell",
+      "description": "Lie on a flat bench, grip the bar slightly wider than shoulder-width. Lower the bar to your chest, then press it back up until your arms are fully extended."
+    },
+    {
+      "id": 4,
+      "name": "Overhead Press",
+      "muscle": "shoulders",
+      "equipment": "barbell",
+      "description": "Stand with the barbell at shoulder height. Press the bar overhead until your arms are locked out, then lower it back to the starting position."
+    },
+    {
+      "id": 5,
+      "name": "Pull-Up",
+      "muscle": "back",
+      "equipment": "bodyweight",
+      "description": "Hang from a bar with palms facing away. Pull yourself up until your chin clears the bar, then lower under control."
+    },
+    {
+      "id": 6,
+      "name": "Push-Up",
+      "muscle": "chest",
+      "equipment": "bodyweight",
+      "description": "Start in a plank with hands under your shoulders. Lower your chest to the floor, keeping your body straight, then push back up."
+    },
+    {
+      "id": 7,
+      "name": "Dumbbell Bicep Curl",
+      "muscle": "arms",
+      "equipment": "dumbbell",
+      "description": "Stand with a dumbbell in each hand, arms at your sides. Curl the weights up toward your shoulders, then lower under control."
+    },
+    {
+      "id": 8,
+      "name": "Tricep Dip",
+      "muscle": "arms",
+      "equipment": "bodyweight",
+      "description": "Place hands on parallel bars or a bench, support your weight. Lower your body by bending your elbows, then press back up."
+    },
+    {
+      "id": 9,
+      "name": "Romanian Deadlift",
+      "muscle": "legs",
+      "equipment": "barbell",
+      "description": "Hold a barbell at hip height. Hinge at the hips, lowering the bar along your legs until you feel a stretch in your hamstrings, then return to standing."
+    },
+    {
+      "id": 10,
+      "name": "Lunges",
+      "muscle": "legs",
+      "equipment": "bodyweight",
+      "description": "Step forward with one leg and lower your hips until both knees are bent at 90 degrees. Push back to the starting position and repeat with the other leg."
+    },
+    {
+      "id": 11,
+      "name": "Lat Pulldown",
+      "muscle": "back",
+      "equipment": "cable",
+      "description": "Sit at a lat pulldown machine, grip the bar wider than shoulder-width. Pull the bar to your upper chest, then return under control."
+    },
+    {
+      "id": 12,
+      "name": "Seated Cable Row",
+      "muscle": "back",
+      "equipment": "cable",
+      "description": "Sit at a cable row machine with feet on the platform. Pull the handle to your torso while keeping your back straight, then return slowly."
+    },
+    {
+      "id": 13,
+      "name": "Dumbbell Shoulder Press",
+      "muscle": "shoulders",
+      "equipment": "dumbbell",
+      "description": "Sit or stand holding dumbbells at shoulder height. Press the weights overhead until your arms are extended, then lower back down."
+    },
+    {
+      "id": 14,
+      "name": "Lateral Raise",
+      "muscle": "shoulders",
+      "equipment": "dumbbell",
+      "description": "Stand with a dumbbell in each hand at your sides. Raise your arms out to the sides until parallel with the floor, then lower under control."
+    },
+    {
+      "id": 15,
+      "name": "Plank",
+      "muscle": "core",
+      "equipment": "bodyweight",
+      "description": "Hold a forearm plank position with your body in a straight line from head to heels. Engage your core and hold for time."
+    },
+    {
+      "id": 16,
+      "name": "Russian Twist",
+      "muscle": "core",
+      "equipment": "bodyweight",
+      "description": "Sit on the floor with knees bent and feet lifted. Lean back slightly and rotate your torso side to side, optionally holding a weight."
+    },
+    {
+      "id": 17,
+      "name": "Hanging Leg Raise",
+      "muscle": "core",
+      "equipment": "bodyweight",
+      "description": "Hang from a pull-up bar. Raise your legs until they are parallel to the floor or higher, then lower under control."
+    },
+    {
+      "id": 18,
+      "name": "Goblet Squat",
+      "muscle": "legs",
+      "equipment": "dumbbell",
+      "description": "Hold a dumbbell vertically at your chest. Squat down keeping your chest up and elbows inside your knees, then stand back up."
+    },
+    {
+      "id": 19,
+      "name": "Bulgarian Split Squat",
+      "muscle": "legs",
+      "equipment": "dumbbell",
+      "description": "Place one foot behind you on a bench. Lower into a lunge on the front leg until your back knee nearly touches the floor, then drive back up."
+    },
+    {
+      "id": 20,
+      "name": "Incline Dumbbell Press",
+      "muscle": "chest",
+      "equipment": "dumbbell",
+      "description": "Lie on an incline bench with a dumbbell in each hand at shoulder level. Press the weights up until your arms are extended, then lower."
+    },
+    {
+      "id": 21,
+      "name": "Cable Tricep Pushdown",
+      "muscle": "arms",
+      "equipment": "cable",
+      "description": "Stand at a cable machine with a rope or bar attachment at chest height. Push the attachment down until your arms are fully extended, then return."
+    },
+    {
+      "id": 22,
+      "name": "Hammer Curl",
+      "muscle": "arms",
+      "equipment": "dumbbell",
+      "description": "Stand with dumbbells at your sides, palms facing your body. Curl the weights up while keeping your palms facing inward, then lower."
+    },
+    {
+      "id": 23,
+      "name": "Calf Raise",
+      "muscle": "legs",
+      "equipment": "bodyweight",
+      "description": "Stand on the edge of a step with your heels hanging off. Rise up onto your toes, then lower your heels below the step level."
+    },
+    {
+      "id": 24,
+      "name": "Face Pull",
+      "muscle": "shoulders",
+      "equipment": "cable",
+      "description": "Set a cable to face height with a rope attachment. Pull the rope toward your face, separating the ends as you pull, then return."
+    },
+    {
+      "id": 25,
+      "name": "Mountain Climber",
+      "muscle": "core",
+      "equipment": "bodyweight",
+      "description": "Start in a high plank. Drive one knee toward your chest, then quickly switch legs, alternating in a running motion."
+    }
+  ]
+}
