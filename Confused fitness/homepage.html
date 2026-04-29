@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Home - Confused Fitness</title>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div>
+            <h1>Confused Fitness</h1>
+            <p>CONFUSED.INC</p>
+          </div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="logBtn">Log</button>
+          <div class="rib" id="rib">🔥 0 Day Streak</div>
+        </div>
+      </header>
+
+      <div class="lay">
+
+        <aside class="side">
+          <a href="Homepage.html" class="on">Home</a>
+          <a href="favs.html">Favorites</a>
+          <a href="add-work.html">Add Work</a>
+          <a href="edit-work.html">Edit Work</a>
+          <a href="cal.html">Calendar</a>
+          <a href="acct.html">Account</a>
+          <a href="set.html">Settings</a>
+        </aside>
+
+        <main class="main">
+
+          <div class="quote">
+            <div class="qLab">Quote of the Day</div>
+            <div class="qTxt" id="qT">loading some words to motivate you...</div>
+            <div class="qAuth" id="qA">— ???</div>
+          </div>
+
+          <div class="exC t">
+            <div class="lab">Today's Workout</div>
+            <div class="exN" id="ex1N">no plan yet</div>
+            <div class="exM" id="ex1M">go add one already</div>
+            <div class="exS"><span id="ex1S">—</span><span id="ex1W"></span></div>
+          </div>
+
+          <div class="exC b">
+            <div class="lab">Next Up</div>
+            <div class="exN" id="ex2N">—</div>
+            <div class="exM" id="ex2M">—</div>
+            <div class="exS"><span id="ex2S">—</span><span id="ex2W"></span></div>
+          </div>
+
+          <div class="cal">
+            <div class="calH">
+              <h3 id="calT">Month YYYY</h3>
+              <div class="calN"><button id="calP">‹</button><button id="calNx">›</button></div>
+            </div>
+            <div class="calG" id="calG">
+              <div class="dn">S</div><div class="dn">M</div><div class="dn">T</div><div class="dn">W</div><div class="dn">T</div><div class="dn">F</div><div class="dn">S</div>
+            </div>
+          </div>
+
+          <div class="bot">
+            <div class="st"><div class="stV"><span class="a" id="wkD">0</span> / <span id="wkT">5</span></div><div class="stL">This Week</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV"><span id="strk">0</span> <span class="a">days</span></div><div class="stL">Streak</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV" id="sets">0</div><div class="stL">Total Sets</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV" id="favs">0</div><div class="stL">Favorites</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV"><span class="a" id="pr">—</span></div><div class="stL">Last 7 Days</div></div>
+          </div>
+
+        </main>
+      </div>
+
+      <script>
+        $(function () {
+          // placeholder data — wire to JSON later via $.getJSON
+          const today = new Date(); const yr = today.getFullYear(); const mo = today.getMonth(); const day = today.getDate();
+          const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+          // sample workout days (red on calendar) — replace with data from sched JSON
+          const wo = [2, 4, 5, 7, 9, 12, 14, 16, 18, 20, 21, 23, 24, 26, 27, 28];
+
+          // sample quotes — could pull from JSON or a public API later
+          const qs = [
+            { t: "The only bad workout is the one that didn't happen.", a: "Anonymous" },
+            { t: "Discipline weighs ounces. Regret weighs tons.", a: "Jim Rohn" },
+            { t: "Suns out guns out, weather permitting.", a: "Confused Fitness" },
+            { t: "You don't have to be extreme. Just consistent.", a: "Anonymous" }
+          ];
+
+          function buildCal() {
+            $('#calT').text(months[mo] + ' ' + yr);
+            const $g = $('#calG'); $g.find('.d').remove();
+            const first = new Date(yr, mo, 1).getDay(); const len = new Date(yr, mo + 1, 0).getDate(); const prev = new Date(yr, mo, 0).getDate();
+
+            for (let i = first - 1; i >= 0; i--) { $g.append($('<div class="d mu">').text(prev - i)); }
+            for (let i = 1; i <= len; i++) {
+              const $d = $('<div class="d">').text(i);
+              if (wo.indexOf(i) !== -1) $d.addClass('wo');
+              if (i === day) $d.addClass('td');
+              $g.append($d);
+            }
+            const used = first + len; const trail = (7 - (used % 7)) % 7;
+            for (let i = 1; i <= trail; i++) { $g.append($('<div class="d mu">').text(i)); }
+          }
+
+          function pickQuote() { const q = qs[Math.floor(Math.random() * qs.length)]; $('#qT').text(q.t); $('#qA').text('— ' + q.a); }
+
+          function loadStats() {
+            // fake stats for now — swap for $.getJSON('user.json') later
+            $('#wkD').text(3); $('#wkT').text(5); $('#strk').text(12); $('#sets').text(142); $('#favs').text(8); $('#pr').text('PR');
+            $('#rib').html('🔥 12 Day Streak');
+          }
+
+          function loadToday() {
+            // placeholder — replace with $.getJSON('schedule.json') keyed to today
+            $('#ex1N').text('Bench Press'); $('#ex1M').text('Chest · Barbell'); $('#ex1S').text('4 × 8'); $('#ex1W').text('185 lb');
+            $('#ex2N').text('Overhead Press'); $('#ex2M').text('Shoulders · Barbell'); $('#ex2S').text('3 × 10'); $('#ex2W').text('95 lb');
+          }
+
+          $('#calP').on('click', function () { alert('cal nav not wired yet, chill'); });
+          $('#calNx').on('click', function () { alert('cal nav not wired yet, chill'); });
+          $('#logBtn').on('click', function () { window.location.href = 'login.html'; });
+
+          buildCal(); pickQuote(); loadStats(); loadToday();
+        });
+      </script>
+
+    </body>
+</html>
