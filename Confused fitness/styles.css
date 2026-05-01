@@ -161,3 +161,110 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .ewList::-webkit-scrollbar, .logHist::-webkit-scrollbar { width: 6px; }
 .ewList::-webkit-scrollbar-thumb, .logHist::-webkit-scrollbar-thumb { background: var(--bdr); }
 .ewList::-webkit-scrollbar-thumb:hover, .logHist::-webkit-scrollbar-thumb:hover { background: var(--acc); }
+
+/* ---- auth ---- */
+.authWrap { flex: 1; padding: 32px; display: flex; align-items: center; justify-content: center; }
+.authGrid { width: min(1100px, 100%); display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: 16px; }
+.authCard, .authSide, .profCard, .goalCard, .focusCard, .favPanel, .histPanel { background: var(--pnl); border: 1px solid var(--bdr); }
+.authCard { padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.authT { font-size: 32px; font-weight: 800; line-height: 1.1; max-width: 12ch; }
+.authSub { color: var(--dim); font-size: 14px; line-height: 1.6; max-width: 42ch; }
+.authForm { display: flex; flex-direction: column; gap: 12px; }
+.authLbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; }
+.authInp { width: 100%; }
+.authRow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ck { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--dim); cursor: pointer; }
+.ck input { accent-color: var(--acc); cursor: pointer; }
+.authLink { color: var(--dim); text-decoration: none; font-size: 12px; transition: color 0.15s; }
+.authLink:hover { color: var(--acc); }
+.authActions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.authBtnLink { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+.authSide { padding: 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; background: linear-gradient(180deg, rgba(255, 59, 59, 0.08), transparent 35%), var(--pnl); }
+.authQuote { font-size: 30px; font-weight: 800; line-height: 1.2; max-width: 16ch; }
+.authMeta { display: flex; flex-direction: column; gap: 18px; }
+.authBlk { border-top: 1px solid var(--bdr); padding-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+.authMini { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; }
+.authExName { font-size: 20px; font-weight: 700; }
+.authExMeta { font-size: 12px; color: var(--acc); text-transform: uppercase; letter-spacing: 1px; }
+.authExDesc { font-size: 13px; color: var(--dim); line-height: 1.55; }
+.authStats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.miniStat { border: 1px solid var(--bdr); padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.miniStat strong { font-size: 24px; font-weight: 800; color: var(--txt); }
+.miniStat span { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; }
+
+/* ---- account ---- */
+.acctMain { flex: 1; padding: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-content: start; }
+.profCard { grid-column: 1 / 3; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+.profTop { display: flex; gap: 18px; align-items: center; }
+.profAv { width: 72px; height: 72px; background: var(--acc); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: white; flex-shrink: 0; }
+.profName { font-size: 28px; font-weight: 800; }
+.profTag { font-size: 12px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+.profBio { color: var(--dim); font-size: 14px; line-height: 1.6; max-width: 65ch; }
+.metaGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.metaBox { border: 1px solid var(--bdr); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.metaBox span { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; }
+.metaBox strong { font-size: 14px; }
+
+.goalCard { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.goalBig { font-size: 38px; font-weight: 800; }
+.goalBig span:first-child { color: var(--acc); }
+.goalLine { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--dim); }
+.prog { width: 100%; height: 10px; background: var(--bg); border: 1px solid var(--bdr); overflow: hidden; }
+.progFill { width: 0; height: 100%; background: var(--acc); transition: width 0.2s; }
+.goalList { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.goalItem { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--bdr); font-size: 12px; }
+.goalItem strong { color: var(--acc); }
+
+.focusCard { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.focusGrid { display: grid; gap: 10px; }
+.focusItem { border: 1px solid var(--bdr); padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.focusItem strong { display: block; font-size: 16px; margin-bottom: 4px; }
+.focusItem span { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+.focusPct { color: var(--acc); font-size: 14px; font-weight: 700; }
+
+.favPanel { grid-column: 2 / 4; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.histPanel { grid-column: 1 / 4; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.panelHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.panelHead h3 { font-size: 18px; font-weight: 700; }
+.miniChip { font-size: 10px; padding: 4px 8px; border: 1px solid var(--acc); color: var(--acc); letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+.favList, .noteList { display: flex; flex-direction: column; gap: 10px; }
+.favRow, .noteRow { border: 1px solid var(--bdr); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.favHead, .noteTop { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+.favName { font-size: 16px; font-weight: 700; }
+.favMeta { display: flex; gap: 6px; flex-wrap: wrap; }
+.favDesc, .noteText { font-size: 13px; color: var(--dim); line-height: 1.55; }
+.noteTag { color: var(--acc); text-transform: uppercase; letter-spacing: 1px; }
+.noteDate { color: var(--dim); font-size: 12px; }
+.acctStats { grid-column: 1 / 4; grid-row: auto; }
+
+/* ---- responsive ---- */
+@media (max-width: 1160px) {
+  .main, .acctMain { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quote, .cal, .profCard, .favPanel, .histPanel, .bot, .acctStats { grid-column: 1 / -1; grid-row: auto; }
+  .metaGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .authGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 840px) {
+  .top { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
+  .lay { flex-direction: column; }
+  .side { width: 100%; padding: 0; display: flex; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--bdr); }
+  .side a { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+  .side a.on { border-left-color: transparent; border-bottom-color: var(--acc); }
+  .main, .acctMain { grid-template-columns: 1fr; }
+  .quote, .exC, .cal, .profCard, .goalCard, .focusCard, .favPanel, .histPanel, .bot, .acctStats { grid-column: 1; grid-row: auto; }
+  .bot { flex-wrap: wrap; }
+  .stD { display: none; }
+  .profTop { flex-direction: column; align-items: flex-start; }
+  .metaGrid { grid-template-columns: 1fr; }
+  .authWrap { padding: 20px; }
+}
+
+@media (max-width: 560px) {
+  .topR { width: 100%; justify-content: space-between; }
+  .authCard, .authSide { padding: 20px; }
+  .authT { font-size: 26px; }
+  .authQuote { font-size: 22px; }
+  .authStats { grid-template-columns: 1fr; }
+  .goalBig { font-size: 32px; }
+}

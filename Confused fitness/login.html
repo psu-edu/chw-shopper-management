@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Login - Confused Fitness</title>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div>
+            <h1>Confused Fitness</h1>
+            <p>CONFUSED.INC</p>
+          </div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="homeBtn">Home</button>
+          <div class="rib">Welcome Back</div>
+        </div>
+      </header>
+
+      <main class="authWrap">
+        <div class="authGrid">
+          <section class="authCard">
+            <div class="lab">Member Login</div>
+            <h2 class="authT">Sign in and keep the streak alive.</h2>
+            <p class="authSub">Your saved workouts, favorites, and progress snapshots are waiting on the other side of this form.</p>
+
+            <form class="authForm" id="loginForm">
+              <label class="authLbl" for="email">Email</label>
+              <input class="inp authInp" id="email" type="email" placeholder="name@confused.inc" required/>
+
+              <label class="authLbl" for="password">Password</label>
+              <input class="inp authInp" id="password" type="password" placeholder="enter your password" required/>
+
+              <div class="authRow">
+                <label class="ck">
+                  <input type="checkbox" checked/>
+                  <span>Keep me signed in</span>
+                </label>
+                <a class="authLink" href="homepage.html">Need a reset?</a>
+              </div>
+
+              <div class="authActions">
+                <button class="btnAdd" type="submit">Sign In</button>
+                <a class="btnGh authBtnLink" href="account.html">Open Account</a>
+              </div>
+            </form>
+          </section>
+
+          <aside class="authSide">
+            <div>
+              <div class="lab">Today&apos;s Push</div>
+              <div class="authQuote" id="authQuote">Small sessions still count. Keep the streak moving.</div>
+            </div>
+
+            <div class="authMeta">
+              <div class="authBlk">
+                <div class="authMini">Featured Exercise</div>
+                <div class="authExName" id="spotName">Loading...</div>
+                <div class="authExMeta" id="spotMeta">Pulling exercise data</div>
+                <p class="authExDesc" id="spotDesc">Give the page a second while it loads a spotlight from your exercise list.</p>
+              </div>
+
+              <div class="authStats">
+                <div class="miniStat">
+                  <strong id="totalExercises">0</strong>
+                  <span>Exercises Ready</span>
+                </div>
+                <div class="miniStat">
+                  <strong id="muscleGroups">0</strong>
+                  <span>Muscle Groups</span>
+                </div>
+                <div class="miniStat">
+                  <strong id="equipmentTypes">0</strong>
+                  <span>Equipment Types</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      <script>
+        $(function () {
+          const lines = [
+            'Consistency beats confusion every single time.',
+            'You do not need perfect workouts. You need the next one.',
+            'Train the plan, then let the plan train you.',
+            'Small sessions still count. Keep the streak moving.'
+          ];
+
+          function setQuote() {
+            $('#authQuote').text(lines[new Date().getDay() % lines.length]);
+          }
+
+          function renderFallback() {
+            $('#spotName').text('Bench Press');
+            $('#spotMeta').text('CHEST · BARBELL');
+            $('#spotDesc').text('Sign in to get back to your saved workouts and training notes.');
+            $('#totalExercises').text('25');
+            $('#muscleGroups').text('6');
+            $('#equipmentTypes').text('4');
+          }
+
+          function loadSpotlight() {
+            $.getJSON('./exersise.json')
+              .done(function (data) {
+                const exercises = data.exercises || [];
+                const muscles = {};
+                const equipment = {};
+
+                if (!exercises.length) {
+                  renderFallback();
+                  return;
+                }
+
+                exercises.forEach(function (exercise) {
+                  muscles[exercise.muscle] = true;
+                  equipment[exercise.equipment] = true;
+                });
+
+                const spotlight = exercises[new Date().getDate() % exercises.length];
+                $('#spotName').text(spotlight.name);
+                $('#spotMeta').text(spotlight.muscle.toUpperCase() + ' · ' + spotlight.equipment.toUpperCase());
+                $('#spotDesc').text(spotlight.description);
+                $('#totalExercises').text(exercises.length);
+                $('#muscleGroups').text(Object.keys(muscles).length);
+                $('#equipmentTypes').text(Object.keys(equipment).length);
+              })
+              .fail(renderFallback);
+          }
+
+          $('#homeBtn').on('click', function () { window.location.href = 'homepage.html'; });
+          $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
+            window.location.href = 'account.html';
+          });
+
+          setQuote();
+          loadSpotlight();
+        });
+      </script>
+
+    </body>
+</html>

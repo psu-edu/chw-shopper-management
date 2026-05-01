@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Account - Confused Fitness</title>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div>
+            <h1>Confused Fitness</h1>
+            <p>CONFUSED.INC</p>
+          </div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="logBtn">Logout</button>
+          <div class="rib" id="rib">🔥 12 Day Streak</div>
+        </div>
+      </header>
+
+      <div class="lay">
+
+        <aside class="side">
+          <a href="homepage.html">Home</a>
+          <a href="favs.html">Favorites</a>
+          <a href="add-work.html">Add Work</a>
+          <a href="edit-work.html">Edit Work</a>
+          <a href="cal.html">Calendar</a>
+          <a href="account.html" class="on">Account</a>
+          <a href="set.html">Settings</a>
+        </aside>
+
+        <main class="acctMain">
+          <section class="profCard">
+            <div class="lab">Account Overview</div>
+            <div class="profTop">
+              <div class="profAv" id="profAv">JM</div>
+              <div>
+                <h2 class="profName" id="profName">Chris Merf</h2>
+                <p class="profTag" id="profTag">@chrisconfused · Intermediate</p>
+              </div>
+            </div>
+            <p class="profBio" id="profBio">Building a steadier weekly routine with simple lifts, cleaner notes, and fewer skipped sessions.</p>
+            <div class="metaGrid">
+              <div class="metaBox">
+                <span>Email</span>
+                <strong id="profEmail">chris@confused.inc</strong>
+              </div>
+              <div class="metaBox">
+                <span>Joined</span>
+                <strong id="profJoin">August 2025</strong>
+              </div>
+              <div class="metaBox">
+                <span>Plan</span>
+                <strong id="profPlan">5-Day Split</strong>
+              </div>
+              <div class="metaBox">
+                <span>Focus</span>
+                <strong id="profFocus">Strength + consistency</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="goalCard">
+            <div class="lab">Weekly Goals</div>
+            <div class="goalBig"><span id="goalDone">3</span> / <span id="goalTotal">5</span></div>
+            <div class="goalLine">
+              <span>Week completion</span>
+              <span id="goalPct">60%</span>
+            </div>
+            <div class="prog"><div class="progFill" id="goalFill"></div></div>
+            <div class="goalList" id="goalList"></div>
+          </section>
+
+          <section class="focusCard">
+            <div class="lab">Training Focus</div>
+            <div class="focusGrid" id="focusGrid">
+              <div class="empty sm">Loading your favorite muscle groups...</div>
+            </div>
+          </section>
+
+          <section class="favPanel">
+            <div class="panelHead">
+              <h3>Favorite Exercises</h3>
+              <a class="btnGh authBtnLink" href="homepage.html">Back Home</a>
+            </div>
+            <div class="favList" id="favList">
+              <div class="empty sm">Loading saved exercises...</div>
+            </div>
+          </section>
+
+          <section class="histPanel">
+            <div class="panelHead">
+              <h3>Recent Notes</h3>
+              <div class="miniChip">Last 7 Days</div>
+            </div>
+            <div class="noteList" id="noteList"></div>
+          </section>
+
+          <section class="bot acctStats">
+            <div class="st"><div class="stV"><span class="a" id="weekDone">0</span> / <span id="weekTarget">5</span></div><div class="stL">This Week</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV"><span id="acctStreak">0</span> <span class="a">days</span></div><div class="stL">Streak</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV" id="favCount">0</div><div class="stL">Favorites</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV" id="muscleCount">0</div><div class="stL">Muscles</div></div>
+            <div class="stD"></div>
+            <div class="st"><div class="stV" id="equipmentCount">0</div><div class="stL">Equipment</div></div>
+          </section>
+        </main>
+      </div>
+
+      <script>
+        $(function () {
+          const user = {
+            avatar: 'CM',
+            name: 'Chris Merf',
+            handle: '@chrisconfused',
+            level: 'Intermediate',
+            email: 'chris@confused.inc',
+            joined: 'August 2025',
+            plan: '5-Day Split',
+            focus: 'Strength + consistency',
+            bio: 'Building a steadier weekly routine with simple lifts, cleaner notes, and fewer skipped sessions.',
+            streak: 12,
+            weekDone: 3,
+            weekTarget: 5
+          };
+
+          const goals = [
+            { name: 'Strength days', value: '3 / 4' },
+            { name: 'Core finishers', value: '2 / 3' },
+            { name: 'Mobility reset', value: '1 / 2' }
+          ];
+
+          const notes = [
+            { tag: 'Bench Press', date: 'Monday', text: 'Bar speed stayed clean at 185 lb for every working set.' },
+            { tag: 'Romanian Deadlift', date: 'Tuesday', text: 'Hamstrings finally took the load instead of my lower back doing all the work.' },
+            { tag: 'Plank', date: 'Thursday', text: 'Held every round without breaking posture. Core endurance is moving.' }
+          ];
+
+          const favoriteIds = [3, 4, 9, 15, 20, 24];
+          const fallbackFavorites = [
+            {
+              id: 3,
+              name: 'Bench Press',
+              muscle: 'chest',
+              equipment: 'barbell',
+              description: 'Lie on a flat bench, grip the bar slightly wider than shoulder-width. Lower the bar to your chest, then press it back up until your arms are fully extended.'
+            },
+            {
+              id: 4,
+              name: 'Overhead Press',
+              muscle: 'shoulders',
+              equipment: 'barbell',
+              description: 'Stand with the barbell at shoulder height. Press the bar overhead until your arms are locked out, then lower it back to the starting position.'
+            },
+            {
+              id: 9,
+              name: 'Romanian Deadlift',
+              muscle: 'legs',
+              equipment: 'barbell',
+              description: 'Hold a barbell at hip height. Hinge at the hips, lowering the bar along your legs until you feel a stretch in your hamstrings, then return to standing.'
+            },
+            {
+              id: 15,
+              name: 'Plank',
+              muscle: 'core',
+              equipment: 'bodyweight',
+              description: 'Hold a forearm plank position with your body in a straight line from head to heels. Engage your core and hold for time.'
+            },
+            {
+              id: 20,
+              name: 'Incline Dumbbell Press',
+              muscle: 'chest',
+              equipment: 'dumbbell',
+              description: 'Lie on an incline bench with a dumbbell in each hand at shoulder level. Press the weights up until your arms are extended, then lower.'
+            },
+            {
+              id: 24,
+              name: 'Face Pull',
+              muscle: 'shoulders',
+              equipment: 'cable',
+              description: 'Set a cable to face height with a rope attachment. Pull the rope toward your face, separating the ends as you pull, then return.'
+            }
+          ];
+
+          function renderProfile() {
+            $('#profAv').text(user.avatar);
+            $('#profName').text(user.name);
+            $('#profTag').text(user.handle + ' · ' + user.level);
+            $('#profBio').text(user.bio);
+            $('#profEmail').text(user.email);
+            $('#profJoin').text(user.joined);
+            $('#profPlan').text(user.plan);
+            $('#profFocus').text(user.focus);
+            $('#weekDone').text(user.weekDone);
+            $('#weekTarget').text(user.weekTarget);
+            $('#acctStreak').text(user.streak);
+            $('#rib').html('🔥 ' + user.streak + ' Day Streak');
+          }
+
+          function renderGoals() {
+            const pct = Math.round((user.weekDone / user.weekTarget) * 100);
+            $('#goalDone').text(user.weekDone);
+            $('#goalTotal').text(user.weekTarget);
+            $('#goalPct').text(pct + '%');
+            $('#goalFill').css('width', pct + '%');
+
+            const $goalList = $('#goalList').empty();
+            goals.forEach(function (goal) {
+              $goalList.append(
+                $('<div class="goalItem">')
+                  .append($('<span>').text(goal.name))
+                  .append($('<strong>').text(goal.value))
+              );
+            });
+          }
+
+          function renderNotes() {
+            const $noteList = $('#noteList').empty();
+            notes.forEach(function (note) {
+              const $row = $('<div class="noteRow">');
+              const $top = $('<div class="noteTop">')
+                .append($('<span class="noteTag">').text(note.tag))
+                .append($('<span class="noteDate">').text(note.date));
+
+              $row.append($top);
+              $row.append($('<p class="noteText">').text(note.text));
+              $noteList.append($row);
+            });
+          }
+
+          function renderFallback() {
+            renderData(fallbackFavorites, {
+              muscleCount: 6,
+              equipmentCount: 4
+            });
+          }
+
+          function renderData(exercises, counts) {
+            const favorites = exercises.filter(function (exercise) {
+              return favoriteIds.indexOf(exercise.id) !== -1;
+            });
+            const muscleCounts = {};
+            const allMuscles = {};
+            const allEquipment = {};
+            const $favList = $('#favList').empty();
+            const $focusGrid = $('#focusGrid').empty();
+
+            exercises.forEach(function (exercise) {
+              allMuscles[exercise.muscle] = true;
+              allEquipment[exercise.equipment] = true;
+            });
+
+            favorites.forEach(function (exercise) {
+              muscleCounts[exercise.muscle] = (muscleCounts[exercise.muscle] || 0) + 1;
+
+              const $row = $('<div class="favRow">');
+              const $head = $('<div class="favHead">')
+                .append($('<div class="favName">').text(exercise.name))
+                .append(
+                  $('<div class="favMeta">')
+                    .append($('<span class="ch mu">').text(exercise.muscle))
+                    .append($('<span class="ch eq">').text(exercise.equipment))
+                );
+
+              $row.append($head);
+              $row.append($('<p class="favDesc">').text(exercise.description));
+              $favList.append($row);
+            });
+
+            Object.keys(muscleCounts)
+              .sort(function (a, b) { return muscleCounts[b] - muscleCounts[a]; })
+              .forEach(function (muscle) {
+                const pct = Math.round((muscleCounts[muscle] / favorites.length) * 100);
+                const $item = $('<div class="focusItem">')
+                  .append(
+                    $('<div>')
+                      .append($('<strong>').text(muscle.charAt(0).toUpperCase() + muscle.slice(1)))
+                      .append($('<span>').text(muscleCounts[muscle] + ' saved exercises'))
+                  )
+                  .append($('<div class="focusPct">').text(pct + '%'));
+
+                $focusGrid.append($item);
+              });
+
+            $('#favCount').text(favorites.length);
+            $('#muscleCount').text(counts && counts.muscleCount ? counts.muscleCount : Object.keys(allMuscles).length);
+            $('#equipmentCount').text(counts && counts.equipmentCount ? counts.equipmentCount : Object.keys(allEquipment).length);
+          }
+
+          $('#logBtn').on('click', function () { window.location.href = 'login.html'; });
+
+          renderProfile();
+          renderGoals();
+          renderNotes();
+
+          $.getJSON('./exersise.json')
+            .done(function (data) {
+              const exercises = data.exercises || [];
+              if (!exercises.length) {
+                renderFallback();
+                return;
+              }
+              renderData(exercises);
+            })
+            .fail(renderFallback);
+        });
+      </script>
+
+    </body>
+</html>
