@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Add Work - Confused Fitness</title>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div>
+            <h1>Confused Fitness</h1>
+            <p>CONFUSED.INC</p>
+          </div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="logBtn">Log</button>
+          <div class="rib" id="rib">🔥 0 Day Streak</div>
+        </div>
+      </header>
+
+      <div class="lay">
+
+        <aside class="side">
+          <a href="Homepage.html">Home</a>
+          <a href="favs.html">Favorites</a>
+          <a href="add-work.html" class="on">Add Work</a>
+          <a href="edit-work.html">Edit Work</a>
+          <a href="cal.html">Calendar</a>
+          <a href="acct.html">Account</a>
+          <a href="set.html">Settings</a>
+        </aside>
+
+        <main class="awMain">
+
+          <aside class="filt">
+            <div class="lab">Filter</div>
+            <div class="fGrp">
+              <div class="fGT">Muscle</div>
+              <div class="fOpts" id="fM"></div>
+            </div>
+            <div class="fGrp">
+              <div class="fGT">Equipment</div>
+              <div class="fOpts" id="fE"></div>
+            </div>
+            <button class="fClr" id="fClr">Clear</button>
+          </aside>
+
+          <section class="awR">
+            <div class="awBar">
+              <input type="text" class="sch" id="sch" placeholder="search exercises..."/>
+              <button class="btnAdd" id="btnAdd">+ Add</button>
+            </div>
+
+            <div class="grd" id="grd"></div>
+          </section>
+
+        </main>
+      </div>
+
+      <!-- add modal -->
+      <div class="mdW" id="mdW">
+        <div class="md">
+          <div class="mdH">
+            <div class="lab">New Exercise</div>
+            <button class="mdX" id="mdX">×</button>
+          </div>
+          <div class="mdB">
+            <input type="text" class="inp" id="nN" placeholder="name (e.g. Cable Crossover)"/>
+            <select class="inp" id="nMu">
+              <option value="">muscle group...</option>
+              <option value="chest">chest</option><option value="back">back</option>
+              <option value="legs">legs</option><option value="shoulders">shoulders</option>
+              <option value="arms">arms</option><option value="core">core</option>
+            </select>
+            <select class="inp" id="nEq">
+              <option value="">equipment...</option>
+              <option value="barbell">barbell</option><option value="dumbbell">dumbbell</option>
+              <option value="cable">cable</option><option value="bodyweight">bodyweight</option>
+              <option value="machine">machine</option>
+            </select>
+            <textarea class="inp tA" id="nDs" placeholder="description / how to do it"></textarea>
+          </div>
+          <div class="mdF">
+            <button class="btnGh" id="mdC">Cancel</button>
+            <button class="btnAdd" id="mdS">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- edit modal -->
+      <div class="mdW" id="edW">
+        <div class="md">
+          <div class="mdH">
+            <div class="lab">Edit Exercise</div>
+            <button class="mdX" id="edX">×</button>
+          </div>
+          <div class="mdB">
+            <input type="text" class="inp" id="eN" placeholder="name"/>
+            <select class="inp" id="eMu">
+              <option value="chest">chest</option><option value="back">back</option>
+              <option value="legs">legs</option><option value="shoulders">shoulders</option>
+              <option value="arms">arms</option><option value="core">core</option>
+            </select>
+            <select class="inp" id="eEq">
+              <option value="barbell">barbell</option><option value="dumbbell">dumbbell</option>
+              <option value="cable">cable</option><option value="bodyweight">bodyweight</option>
+              <option value="machine">machine</option>
+            </select>
+            <textarea class="inp tA" id="eDs"></textarea>
+          </div>
+          <div class="mdF">
+            <button class="btnGh" id="edDel">Delete</button>
+            <div style="flex:1"></div>
+            <button class="btnGh" id="edC">Cancel</button>
+            <button class="btnAdd" id="edS">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        $(function () {
+          const LS = 'cf_ex';
+          const muscles = ['chest','back','legs','shoulders','arms','core'];
+          const equips = ['barbell','dumbbell','cable','bodyweight','machine'];
+          let all = []; let active = { mu: new Set(), eq: new Set() }; let q = ''; let editId = null;
+
+          function load() {
+            $.getJSON('exercises.json', function (data) {
+              const base = data.exercises;
+              const stored = JSON.parse(localStorage.getItem(LS) || '{}');
+              const customs = stored.custom || []; const edits = stored.edits || {};
+              all = base.map(function (x) { return edits[x.id] ? Object.assign({}, x, edits[x.id]) : x; }).filter(function (x) { return !x._deleted; });
+              all = all.concat(customs);
+              render();
+            }).fail(function () {
+              const stored = JSON.parse(localStorage.getItem(LS) || '{}');
+              all = stored.custom || []; render();
+            });
+          }
+
+          function save(customs, edits) {
+            const cur = JSON.parse(localStorage.getItem(LS) || '{}');
+            if (customs) cur.custom = customs; if (edits) cur.edits = edits;
+            localStorage.setItem(LS, JSON.stringify(cur));
+          }
+
+          function buildFilters() {
+            const $m = $('#fM'); const $e = $('#fE');
+            muscles.forEach(function (m) { $m.append('<label class="fOp"><input type="checkbox" data-k="mu" data-v="'+m+'"/><span>'+m+'</span></label>'); });
+            equips.forEach(function (e) { $e.append('<label class="fOp"><input type="checkbox" data-k="eq" data-v="'+e+'"/><span>'+e+'</span></label>'); });
+          }
+
+          function render() {
+            const $g = $('#grd').empty();
+            const fil = all.filter(function (x) {
+              if (active.mu.size && !active.mu.has(x.muscle)) return false;
+              if (active.eq.size && !active.eq.has(x.equipment)) return false;
+              if (q && x.name.toLowerCase().indexOf(q) === -1) return false;
+              return true;
+            });
+            if (!fil.length) { $g.append('<div class="empty">no exercises match. loosen up the filter.</div>'); return; }
+            fil.forEach(function (x) {
+              const c = $('<div class="card"></div>');
+              c.append('<button class="cE" data-id="'+x.id+'">edit</button>');
+              c.append('<div class="cN">'+x.name+'</div>');
+              c.append('<div class="cT"><span class="ch mu">'+x.muscle+'</span><span class="ch eq">'+x.equipment+'</span></div>');
+              c.append('<div class="cD">'+x.description+'</div>');
+              $g.append(c);
+            });
+          }
+
+          $(document).on('change', '.fOp input', function () {
+            const k = $(this).data('k'); const v = $(this).data('v');
+            if (this.checked) active[k].add(v); else active[k].delete(v);
+            render();
+          });
+          $('#fClr').on('click', function () { $('.fOp input').prop('checked', false); active.mu.clear(); active.eq.clear(); render(); });
+          $('#sch').on('input', function () { q = this.value.toLowerCase().trim(); render(); });
+
+          $('#btnAdd').on('click', function () { $('#nN,#nDs').val(''); $('#nMu,#nEq').val(''); $('#mdW').addClass('o'); });
+          $('#mdX, #mdC').on('click', function () { $('#mdW').removeClass('o'); });
+          $('#mdS').on('click', function () {
+            const n = $('#nN').val().trim(); const m = $('#nMu').val(); const e = $('#nEq').val(); const d = $('#nDs').val().trim();
+            if (!n || !m || !e) { alert('name, muscle, and equipment required'); return; }
+            const stored = JSON.parse(localStorage.getItem(LS) || '{}');
+            const customs = stored.custom || [];
+            const newId = 1000 + customs.length;
+            customs.push({ id: newId, name: n, muscle: m, equipment: e, description: d || 'no description yet.' });
+            save(customs, null);
+            $('#mdW').removeClass('o'); load();
+          });
+
+          $(document).on('click', '.cE', function () {
+            editId = parseInt($(this).data('id'), 10);
+            const x = all.find(function (a) { return a.id === editId; }); if (!x) return;
+            $('#eN').val(x.name); $('#eMu').val(x.muscle); $('#eEq').val(x.equipment); $('#eDs').val(x.description);
+            $('#edW').addClass('o');
+          });
+          $('#edX, #edC').on('click', function () { $('#edW').removeClass('o'); });
+          $('#edS').on('click', function () {
+            const stored = JSON.parse(localStorage.getItem(LS) || '{}');
+            const customs = stored.custom || []; const edits = stored.edits || {};
+            const upd = { name: $('#eN').val().trim(), muscle: $('#eMu').val(), equipment: $('#eEq').val(), description: $('#eDs').val().trim() };
+            if (editId >= 1000) {
+              const i = customs.findIndex(function (c) { return c.id === editId; });
+              if (i !== -1) customs[i] = Object.assign(customs[i], upd);
+            } else { edits[editId] = upd; }
+            save(customs, edits); $('#edW').removeClass('o'); load();
+          });
+          $('#edDel').on('click', function () {
+            if (!confirm('delete this exercise?')) return;
+            const stored = JSON.parse(localStorage.getItem(LS) || '{}');
+            const customs = stored.custom || []; const edits = stored.edits || {};
+            if (editId >= 1000) {
+              const i = customs.findIndex(function (c) { return c.id === editId; });
+              if (i !== -1) customs.splice(i, 1);
+            } else { edits[editId] = { _deleted: true }; }
+            save(customs, edits); $('#edW').removeClass('o'); load();
+          });
+
+          $('#logBtn').on('click', function () { window.location.href = 'login.html'; });
+
+          const s = parseInt(localStorage.getItem('cf_streak') || '0', 10);
+          $('#rib').html('🔥 ' + s + ' Day Streak');
+
+          buildFilters(); load();
+        });
+      </script>
+
+    </body>
+</html>
