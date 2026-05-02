@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Calendar - Confused Fitness</title>
+        <style>
+          .calMain { flex:1; padding:24px; display:grid; grid-template-columns: 1fr 320px; gap:16px; align-items:start; }
+          .calMain .cal { grid-column: auto; grid-row: auto; }
+          .schPanel { background: var(--pnl); border: 1px solid var(--bdr); padding: 20px; display:flex; flex-direction:column; gap:14px; min-height: 300px; }
+          .schDay { font-size: 18px; font-weight: 800; }
+          .schSub { font-size: 11px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+          .schList { display:flex; flex-direction:column; gap:6px; max-height: 280px; overflow-y:auto; }
+          .schItm { display:flex; align-items:center; gap:10px; padding: 8px 10px; border: 1px solid var(--bdr); font-size: 13px; }
+          .schItm .schN { flex:1; font-weight: 600; }
+          .schItm .schX { background:transparent; border:1px solid var(--bdr); color:var(--dim); padding:2px 8px; font-size:10px; cursor:pointer; letter-spacing:1px; text-transform:uppercase; }
+          .schItm .schX:hover { color:var(--acc); border-color:var(--acc); }
+          .pickWrap { display:flex; flex-direction:column; gap:8px; }
+          .pickList { max-height: 220px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; border:1px solid var(--bdr); padding: 6px; }
+          .pickItm { padding: 8px 10px; border: 1px solid transparent; cursor:pointer; font-size:12px; transition: all 0.15s; }
+          .pickItm:hover { border-color: var(--acc); }
+          .pickItm .pkN { font-weight: 700; }
+          .pickItm .pkM { color: var(--dim); font-size: 10px; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+          .calG .d { position:relative; }
+          .calG .d.has::after { content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:6px; height:6px; background:var(--acc); border-radius:50%; }
+          .calG .d.sel { border-color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
+          @media (max-width: 1160px) { .calMain { grid-template-columns: 1fr; } }
+        </style>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div><h1>Confused Fitness</h1><p>CONFUSED.INC</p></div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="logBtn">Log</button>
+          <div class="rib" id="rib">🔥 0 Day Streak</div>
+        </div>
+      </header>
+
+      <div class="lay">
+
+        <aside class="side">
+          <a href="homepage.html">Home</a>
+          <a href="favorites.html">Favorites</a>
+          <a href="add work.html">Add Work</a>
+          <a href="edit work.html">Edit Work</a>
+          <a href="calendar.html" class="on">Calendar</a>
+          <a href="account.html">Account</a>
+          <a href="settings.html">Settings</a>
+        </aside>
+
+        <main class="calMain">
+
+          <div class="cal">
+            <div class="calH"><h3 id="calT">Month YYYY</h3><div class="calN"><button id="calP">‹</button><button id="calNx">›</button></div></div>
+            <div class="calG" id="calG">
+              <div class="dn">S</div><div class="dn">M</div><div class="dn">T</div><div class="dn">W</div><div class="dn">T</div><div class="dn">F</div><div class="dn">S</div>
+            </div>
+          </div>
+
+          <div class="schPanel">
+            <div><div class="schDay" id="schDay">Pick a day</div><div class="schSub" id="schSub">click any day on the calendar</div></div>
+            <div><div class="lab">Scheduled</div><div class="schList" id="schList"><div class="empty sm">nothing scheduled here.</div></div></div>
+            <div class="pickWrap" id="pickWrap" style="display:none;">
+              <div class="lab">Add to this day</div>
+              <input type="text" class="sch" id="pickSch" placeholder="search exercises..."/>
+              <div class="pickList" id="pickList"></div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+      <script>
+        $(function () {
+          const LS='cf_ex'; const SCH='cf_sched';
+          const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+          const today=new Date(); let viewYr=today.getFullYear(); let viewMo=today.getMonth();
+          let selKey=null; let all=[]; let pickQ='';
+
+          function loadSched(){try{return JSON.parse(localStorage.getItem(SCH)||'{}');}catch(e){return{};}}
+          function saveSched(s){localStorage.setItem(SCH,JSON.stringify(s));}
+          function dayKey(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+
+          function loadEx(){
+            $.getJSON('exercises.json',function(data){
+              const base=data.exercises; const stored=JSON.parse(localStorage.getItem(LS)||'{}'); const customs=stored.custom||[]; const edits=stored.edits||{};
+              all=base.map(function(x){return edits[x.id]?Object.assign({},x,edits[x.id]):x;}).filter(function(x){return !x._deleted;});
+              all=all.concat(customs); buildCal();
+            }).fail(function(){const stored=JSON.parse(localStorage.getItem(LS)||'{}'); all=stored.custom||[]; buildCal();});
+          }
+
+          function buildCal(){
+            const sched=loadSched(); $('#calT').text(months[viewMo]+' '+viewYr);
+            const $g=$('#calG'); $g.find('.d').remove();
+            const first=new Date(viewYr,viewMo,1).getDay(); const len=new Date(viewYr,viewMo+1,0).getDate(); const prev=new Date(viewYr,viewMo,0).getDate();
+            for(let i=first-1;i>=0;i--){$g.append($('<div class="d mu">').text(prev-i));}
+            for(let i=1;i<=len;i++){
+              const k=dayKey(viewYr,viewMo,i); const $d=$('<div class="d">').text(i).attr('data-key',k);
+              if(sched[k]&&sched[k].length) $d.addClass('has');
+              if(viewYr===today.getFullYear()&&viewMo===today.getMonth()&&i===today.getDate()) $d.addClass('td');
+              if(k===selKey) $d.addClass('sel');
+              $g.append($d);
+            }
+            const used=first+len; const trail=(7-(used%7))%7;
+            for(let i=1;i<=trail;i++){$g.append($('<div class="d mu">').text(i));}
+          }
+
+          function renderSchedFor(key){
+            const sched=loadSched(); const arr=sched[key]||[]; const $l=$('#schList').empty();
+            if(!arr.length){$l.append('<div class="empty sm">nothing scheduled here.</div>'); return;}
+            arr.forEach(function(id,idx){
+              const x=all.find(function(a){return a.id===id;}); if(!x) return;
+              const $r=$('<div class="schItm"></div>');
+              $r.append('<div class="schN">'+x.name+'</div>');
+              $r.append('<span class="ch mu" style="font-size:9px;">'+x.muscle+'</span>');
+              $r.append('<button class="schX" data-idx="'+idx+'">remove</button>');
+              $l.append($r);
+            });
+          }
+
+          function renderPicker(){
+            const $p=$('#pickList').empty();
+            const fil=all.filter(function(x){return !pickQ||x.name.toLowerCase().indexOf(pickQ)!==-1;});
+            if(!fil.length){$p.append('<div class="empty sm">no matches.</div>'); return;}
+            fil.slice(0,50).forEach(function(x){
+              const $i=$('<div class="pickItm" data-id="'+x.id+'"></div>');
+              $i.append('<div class="pkN">'+x.name+'</div>');
+              $i.append('<div class="pkM">'+x.muscle+' · '+x.equipment+'</div>');
+              $p.append($i);
+            });
+          }
+
+          function selectDay(key,label){selKey=key; $('#schDay').text(label); $('#schSub').text(key); $('#pickWrap').show(); renderSchedFor(key); renderPicker(); buildCal();}
+
+          $('#calP').on('click',function(){viewMo--; if(viewMo<0){viewMo=11; viewYr--;} buildCal();});
+          $('#calNx').on('click',function(){viewMo++; if(viewMo>11){viewMo=0; viewYr++;} buildCal();});
+
+          $(document).on('click','#calG .d:not(.mu)',function(){
+            const key=$(this).attr('data-key'); if(!key) return;
+            const dnum=parseInt($(this).text(),10); const d=new Date(viewYr,viewMo,dnum);
+            const dayName=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+            const label=dayName+' · '+months[viewMo]+' '+dnum;
+            selectDay(key,label);
+          });
+
+          $(document).on('click','.pickItm',function(){
+            if(!selKey) return; const id=parseInt($(this).attr('data-id'),10);
+            const sched=loadSched(); if(!sched[selKey]) sched[selKey]=[];
+            if(sched[selKey].indexOf(id)===-1) sched[selKey].push(id);
+            saveSched(sched); renderSchedFor(selKey); buildCal();
+          });
+
+          $(document).on('click','.schX',function(){
+            if(!selKey) return; const idx=parseInt($(this).data('idx'),10);
+            const sched=loadSched(); if(sched[selKey]){sched[selKey].splice(idx,1); if(!sched[selKey].length) delete sched[selKey]; saveSched(sched); renderSchedFor(selKey); buildCal();}
+          });
+
+          $('#pickSch').on('input',function(){pickQ=this.value.toLowerCase().trim(); renderPicker();});
+          $('#logBtn').on('click',function(){window.location.href='login.html';});
+          const s=parseInt(localStorage.getItem('cf_streak')||'0',10); $('#rib').html('🔥 '+s+' Day Streak');
+          loadEx();
+        });
+      </script>
+
+    </body>
+</html>

@@ -12,10 +12,7 @@
       <header class="top">
         <div class="brand">
           <div class="mark">CF</div>
-          <div>
-            <h1>Confused Fitness</h1>
-            <p>CONFUSED.INC</p>
-          </div>
+          <div><h1>Confused Fitness</h1><p>CONFUSED.INC</p></div>
         </div>
         <div class="topR">
           <button class="btnLog" id="logBtn">Log</button>
@@ -27,12 +24,12 @@
 
         <aside class="side">
           <a href="homepage.html">Home</a>
-          <a href="favs.html">Favorites</a>
+          <a href="favorites.html">Favorites</a>
           <a href="add work.html">Add Work</a>
           <a href="edit work.html" class="on">Edit Work</a>
-          <a href="cal.html">Calendar</a>
+          <a href="calendar.html">Calendar</a>
           <a href="account.html">Account</a>
-          <a href="set.html">Settings</a>
+          <a href="settings.html">Settings</a>
         </aside>
 
         <main class="ewMain">
@@ -52,10 +49,7 @@
               </div>
             </div>
 
-            <div class="ewDsc">
-              <div class="lab">Description</div>
-              <div class="ewDtx" id="ewDt">— select an exercise to view details —</div>
-            </div>
+            <div class="ewDsc"><div class="lab">Description</div><div class="ewDtx" id="ewDt">— select an exercise to view details —</div></div>
 
             <div class="ewLog">
               <div class="lab">Today's Log</div>
@@ -69,6 +63,7 @@
             </div>
 
             <div class="ewActs">
+              <button class="btnGh" id="actFav" disabled>☆ Favorite</button>
               <button class="btnGh" id="actEd" disabled>Edit Exercise</button>
               <button class="btnGh" id="actDel" disabled>Delete</button>
             </div>
@@ -78,13 +73,9 @@
         </main>
       </div>
 
-      <!-- edit modal -->
       <div class="mdW" id="edW">
         <div class="md">
-          <div class="mdH">
-            <div class="lab">Edit Exercise</div>
-            <button class="mdX" id="edX">×</button>
-          </div>
+          <div class="mdH"><div class="lab">Edit Exercise</div><button class="mdX" id="edX">×</button></div>
           <div class="mdB">
             <input type="text" class="inp" id="eN" placeholder="name"/>
             <select class="inp" id="eMu">
@@ -99,139 +90,102 @@
             </select>
             <textarea class="inp tA" id="eDs"></textarea>
           </div>
-          <div class="mdF">
-            <button class="btnGh" id="edC">Cancel</button>
-            <button class="btnAdd" id="edS">Save</button>
-          </div>
+          <div class="mdF"><button class="btnGh" id="edC">Cancel</button><button class="btnAdd" id="edS">Save</button></div>
         </div>
       </div>
 
       <script>
         $(function () {
-          const LS = 'cf_ex'; const LG = 'cf_log';
-          let all = []; let q = ''; let cur = null;
+          const LS='cf_ex'; const LG='cf_log'; const LF='cf_favs';
+          let all=[]; let q=''; let cur=null;
+          let favIds=[]; try{favIds=JSON.parse(localStorage.getItem(LF)||'[]');}catch(e){favIds=[];}
+          function saveFavs(){localStorage.setItem(LF,JSON.stringify(favIds));}
+          function updateFavBtn(){if(!cur){$('#actFav').prop('disabled',true).text('☆ Favorite'); return;} const isFav=favIds.indexOf(cur.id)!==-1; $('#actFav').prop('disabled',false).text(isFav?'★ Favorited':'☆ Favorite');}
 
-          function load() {
-            $.getJSON('exercises.json', function (data) {
-              const base = data.exercises;
-              const stored = JSON.parse(localStorage.getItem(LS) || '{}');
-              const customs = stored.custom || []; const edits = stored.edits || {};
-              all = base.map(function (x) { return edits[x.id] ? Object.assign({}, x, edits[x.id]) : x; }).filter(function (x) { return !x._deleted; });
-              all = all.concat(customs);
-              renderList(); if (cur) { const fresh = all.find(function (x) { return x.id === cur.id; }); if (fresh) showDetail(fresh); else clearDetail(); }
-            }).fail(function () {
-              const stored = JSON.parse(localStorage.getItem(LS) || '{}');
-              all = stored.custom || []; renderList();
-            });
+          function load(){
+            $.getJSON('exercises.json',function(data){
+              const base=data.exercises; const stored=JSON.parse(localStorage.getItem(LS)||'{}'); const customs=stored.custom||[]; const edits=stored.edits||{};
+              all=base.map(function(x){return edits[x.id]?Object.assign({},x,edits[x.id]):x;}).filter(function(x){return !x._deleted;});
+              all=all.concat(customs); renderList();
+              if(cur){const fresh=all.find(function(x){return x.id===cur.id;}); if(fresh) showDetail(fresh); else clearDetail();}
+            }).fail(function(){const stored=JSON.parse(localStorage.getItem(LS)||'{}'); all=stored.custom||[]; renderList();});
           }
 
-          function save(customs, edits) {
-            const cs = JSON.parse(localStorage.getItem(LS) || '{}');
-            if (customs) cs.custom = customs; if (edits) cs.edits = edits;
-            localStorage.setItem(LS, JSON.stringify(cs));
-          }
+          function save(customs,edits){const cs=JSON.parse(localStorage.getItem(LS)||'{}'); if(customs) cs.custom=customs; if(edits) cs.edits=edits; localStorage.setItem(LS,JSON.stringify(cs));}
 
-          function renderList() {
-            const $l = $('#lst').empty();
-            const fil = all.filter(function (x) { return !q || x.name.toLowerCase().indexOf(q) !== -1; });
-            if (!fil.length) { $l.append('<div class="empty sm">nothing matches</div>'); return; }
-            fil.forEach(function (x) {
-              const it = $('<div class="lItm" data-id="'+x.id+'"></div>');
-              if (cur && cur.id === x.id) it.addClass('act');
+          function renderList(){
+            const $l=$('#lst').empty();
+            const fil=all.filter(function(x){return !q||x.name.toLowerCase().indexOf(q)!==-1;});
+            if(!fil.length){$l.append('<div class="empty sm">nothing matches</div>'); return;}
+            fil.forEach(function(x){
+              const it=$('<div class="lItm" data-id="'+x.id+'"></div>');
+              if(cur&&cur.id===x.id) it.addClass('act');
               it.append('<div class="lN">'+x.name+'</div>');
               it.append('<div class="lM">'+x.muscle+' · '+x.equipment+'</div>');
               $l.append(it);
             });
           }
 
-          function showDetail(x) {
-            cur = x;
-            $('#ewN').text(x.name);
-            $('#ewLogo').text(x.name.charAt(0).toUpperCase());
+          function showDetail(x){
+            cur=x; $('#ewN').text(x.name); $('#ewLogo').text(x.name.charAt(0).toUpperCase());
             $('#ewC').empty().append('<span class="ch mu">'+x.muscle+'</span><span class="ch eq">'+x.equipment+'</span>');
             $('#ewDt').text(x.description);
-            $('#actEd, #actDel, #lgSave').prop('disabled', false);
+            $('#actEd, #actDel, #lgSave').prop('disabled',false);
             $('#lst .lItm').removeClass('act'); $('#lst .lItm[data-id="'+x.id+'"]').addClass('act');
-            renderLog();
+            updateFavBtn(); renderLog();
           }
 
-          function clearDetail() {
-            cur = null;
-            $('#ewN').text('pick something on the left'); $('#ewLogo').text('?');
+          function clearDetail(){
+            cur=null; $('#ewN').text('pick something on the left'); $('#ewLogo').text('?');
             $('#ewC').empty(); $('#ewDt').text('— select an exercise to view details —');
-            $('#actEd, #actDel, #lgSave').prop('disabled', true);
-            $('#lgH').empty();
+            $('#actEd, #actDel, #lgSave').prop('disabled',true); updateFavBtn(); $('#lgH').empty();
           }
 
-          function renderLog() {
-            const logs = JSON.parse(localStorage.getItem(LG) || '{}');
-            const arr = (logs[cur.id] || []).slice().reverse();
-            const $h = $('#lgH').empty();
-            if (!arr.length) { $h.append('<div class="empty sm">no logs yet for this one.</div>'); return; }
-            arr.slice(0, 8).forEach(function (e) {
-              const d = new Date(e.t); const ds = (d.getMonth()+1)+'/'+d.getDate();
-              $h.append('<div class="lgE"><span class="lgD">'+ds+'</span><span class="lgV">'+e.s+' × '+e.r+'</span><span class="lgW">'+e.w+' lb</span></div>');
-            });
+          function renderLog(){
+            const logs=JSON.parse(localStorage.getItem(LG)||'{}'); const arr=(logs[cur.id]||[]).slice().reverse();
+            const $h=$('#lgH').empty();
+            if(!arr.length){$h.append('<div class="empty sm">no logs yet for this one.</div>'); return;}
+            arr.slice(0,8).forEach(function(e){const d=new Date(e.t); const ds=(d.getMonth()+1)+'/'+d.getDate(); $h.append('<div class="lgE"><span class="lgD">'+ds+'</span><span class="lgV">'+e.s+' × '+e.r+'</span><span class="lgW">'+e.w+' lb</span></div>');});
           }
 
-          // search
-          $('#sch').on('input', function () { q = this.value.toLowerCase().trim(); renderList(); });
+          $('#sch').on('input',function(){q=this.value.toLowerCase().trim(); renderList();});
+          $(document).on('click','.lItm',function(){const id=parseInt($(this).data('id'),10); const x=all.find(function(a){return a.id===id;}); if(x) showDetail(x);});
 
-          // pick item
-          $(document).on('click', '.lItm', function () {
-            const id = parseInt($(this).data('id'), 10);
-            const x = all.find(function (a) { return a.id === id; }); if (x) showDetail(x);
-          });
-
-          // log save
-          $('#lgSave').on('click', function () {
-            if (!cur) return;
-            const s = parseInt($('#lgS').val(), 10); const r = parseInt($('#lgR').val(), 10); const w = parseFloat($('#lgW').val());
-            if (!s || !r) { alert('sets and reps required'); return; }
-            const logs = JSON.parse(localStorage.getItem(LG) || '{}');
-            if (!logs[cur.id]) logs[cur.id] = [];
-            logs[cur.id].push({ s: s, r: r, w: isNaN(w) ? 0 : w, t: Date.now() });
-            localStorage.setItem(LG, JSON.stringify(logs));
+          $('#lgSave').on('click',function(){
+            if(!cur) return;
+            const s=parseInt($('#lgS').val(),10); const r=parseInt($('#lgR').val(),10); const w=parseFloat($('#lgW').val());
+            if(!s||!r){alert('sets and reps required'); return;}
+            const logs=JSON.parse(localStorage.getItem(LG)||'{}'); if(!logs[cur.id]) logs[cur.id]=[];
+            logs[cur.id].push({s:s,r:r,w:isNaN(w)?0:w,t:Date.now()});
+            localStorage.setItem(LG,JSON.stringify(logs));
             $('#lgS,#lgR,#lgW').val(''); renderLog();
           });
 
-          // edit modal
-          $('#actEd').on('click', function () {
-            if (!cur) return;
-            $('#eN').val(cur.name); $('#eMu').val(cur.muscle); $('#eEq').val(cur.equipment); $('#eDs').val(cur.description);
-            $('#edW').addClass('o');
-          });
-          $('#edX, #edC').on('click', function () { $('#edW').removeClass('o'); });
-          $('#edS').on('click', function () {
-            const stored = JSON.parse(localStorage.getItem(LS) || '{}');
-            const customs = stored.custom || []; const edits = stored.edits || {};
-            const upd = { name: $('#eN').val().trim(), muscle: $('#eMu').val(), equipment: $('#eEq').val(), description: $('#eDs').val().trim() };
-            if (cur.id >= 1000) {
-              const i = customs.findIndex(function (c) { return c.id === cur.id; });
-              if (i !== -1) customs[i] = Object.assign(customs[i], upd);
-            } else { edits[cur.id] = upd; }
-            save(customs, edits); $('#edW').removeClass('o'); load();
+          $('#actFav').on('click',function(){if(!cur) return; const i=favIds.indexOf(cur.id); if(i===-1) favIds.push(cur.id); else favIds.splice(i,1); saveFavs(); updateFavBtn();});
+
+          $('#actEd').on('click',function(){if(!cur) return; $('#eN').val(cur.name); $('#eMu').val(cur.muscle); $('#eEq').val(cur.equipment); $('#eDs').val(cur.description); $('#edW').addClass('o');});
+          $('#edX, #edC').on('click',function(){$('#edW').removeClass('o');});
+          $('#edS').on('click',function(){
+            const stored=JSON.parse(localStorage.getItem(LS)||'{}'); const customs=stored.custom||[]; const edits=stored.edits||{};
+            const upd={name:$('#eN').val().trim(),muscle:$('#eMu').val(),equipment:$('#eEq').val(),description:$('#eDs').val().trim()};
+            if(cur.id>=1000){const i=customs.findIndex(function(c){return c.id===cur.id;}); if(i!==-1) customs[i]=Object.assign(customs[i],upd);}
+            else {edits[cur.id]=upd;}
+            save(customs,edits); $('#edW').removeClass('o'); load();
           });
 
-          // delete
-          $('#actDel').on('click', function () {
-            if (!cur) return;
-            if (!confirm('delete "'+cur.name+'"? this also clears its logs.')) return;
-            const stored = JSON.parse(localStorage.getItem(LS) || '{}');
-            const customs = stored.custom || []; const edits = stored.edits || {};
-            if (cur.id >= 1000) {
-              const i = customs.findIndex(function (c) { return c.id === cur.id; });
-              if (i !== -1) customs.splice(i, 1);
-            } else { edits[cur.id] = { _deleted: true }; }
-            const logs = JSON.parse(localStorage.getItem(LG) || '{}'); delete logs[cur.id]; localStorage.setItem(LG, JSON.stringify(logs));
-            save(customs, edits); cur = null; load(); clearDetail();
+          $('#actDel').on('click',function(){
+            if(!cur) return; if(!confirm('delete "'+cur.name+'"? this also clears its logs.')) return;
+            const stored=JSON.parse(localStorage.getItem(LS)||'{}'); const customs=stored.custom||[]; const edits=stored.edits||{};
+            if(cur.id>=1000){const i=customs.findIndex(function(c){return c.id===cur.id;}); if(i!==-1) customs.splice(i,1);}
+            else {edits[cur.id]={_deleted:true};}
+            const logs=JSON.parse(localStorage.getItem(LG)||'{}'); delete logs[cur.id]; localStorage.setItem(LG,JSON.stringify(logs));
+            favIds=favIds.filter(function(f){return f!==cur.id;}); saveFavs();
+            try{const sched=JSON.parse(localStorage.getItem('cf_sched')||'{}'); Object.keys(sched).forEach(function(k){sched[k]=(sched[k]||[]).filter(function(id){return id!==cur.id;}); if(!sched[k].length) delete sched[k];}); localStorage.setItem('cf_sched',JSON.stringify(sched));}catch(e){}
+            save(customs,edits); cur=null; load(); clearDetail();
           });
 
-          $('#logBtn').on('click', function () { window.location.href = 'login.html'; });
-
-          const s = parseInt(localStorage.getItem('cf_streak') || '0', 10);
-          $('#rib').html('🔥 ' + s + ' Day Streak');
-
+          $('#logBtn').on('click',function(){window.location.href='login.html';});
+          const s=parseInt(localStorage.getItem('cf_streak')||'0',10); $('#rib').html('🔥 '+s+' Day Streak');
           load();
         });
       </script>

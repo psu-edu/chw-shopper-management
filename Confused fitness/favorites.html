@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Favorites - Confused Fitness</title>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div><h1>Confused Fitness</h1><p>CONFUSED.INC</p></div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="logBtn">Log</button>
+          <div class="rib" id="rib">🔥 0 Day Streak</div>
+        </div>
+      </header>
+
+      <div class="lay">
+
+        <aside class="side">
+          <a href="homepage.html">Home</a>
+          <a href="favorites.html" class="on">Favorites</a>
+          <a href="add work.html">Add Work</a>
+          <a href="edit work.html">Edit Work</a>
+          <a href="calendar.html">Calendar</a>
+          <a href="account.html">Account</a>
+          <a href="settings.html">Settings</a>
+        </aside>
+
+        <main class="awR" style="flex:1; padding:24px; display:flex; flex-direction:column; gap:16px;">
+          <div class="awBar"><input type="text" class="sch" id="sch" placeholder="search your favorites..."/></div>
+          <div class="grd" id="grd"></div>
+        </main>
+      </div>
+
+      <script>
+        $(function () {
+          const LS='cf_ex'; const LF='cf_favs';
+          let all=[]; let favIds=[]; let q='';
+          function getFavs(){try{return JSON.parse(localStorage.getItem(LF)||'[]');}catch(e){return[];}}
+          function setFavs(arr){localStorage.setItem(LF,JSON.stringify(arr));}
+
+          function load(){
+            favIds=getFavs();
+            $.getJSON('exercises.json',function(data){
+              const base=data.exercises; const stored=JSON.parse(localStorage.getItem(LS)||'{}'); const customs=stored.custom||[]; const edits=stored.edits||{};
+              all=base.map(function(x){return edits[x.id]?Object.assign({},x,edits[x.id]):x;}).filter(function(x){return !x._deleted;});
+              all=all.concat(customs); render();
+            }).fail(function(){const stored=JSON.parse(localStorage.getItem(LS)||'{}'); all=stored.custom||[]; render();});
+          }
+
+          function render(){
+            const $g=$('#grd').empty();
+            const fav=all.filter(function(x){return favIds.indexOf(x.id)!==-1;});
+            const fil=fav.filter(function(x){return !q||x.name.toLowerCase().indexOf(q)!==-1;});
+            if(!favIds.length){$g.append('<div class="empty">No favorites yet. Star some exercises from Add Work or Edit Work.</div>'); return;}
+            if(!fil.length){$g.append('<div class="empty">no favorites match that search.</div>'); return;}
+            fil.forEach(function(x){
+              const c=$('<div class="card"></div>');
+              c.append('<button class="cE" data-id="'+x.id+'">remove</button>');
+              c.append('<div class="cN">'+x.name+'</div>');
+              c.append('<div class="cT"><span class="ch mu">'+x.muscle+'</span><span class="ch eq">'+x.equipment+'</span></div>');
+              c.append('<div class="cD">'+x.description+'</div>');
+              $g.append(c);
+            });
+          }
+
+          $(document).on('click','.cE',function(){const id=parseInt($(this).data('id'),10); favIds=favIds.filter(function(f){return f!==id;}); setFavs(favIds); render();});
+          $('#sch').on('input',function(){q=this.value.toLowerCase().trim(); render();});
+          $('#logBtn').on('click',function(){window.location.href='login.html';});
+          const s=parseInt(localStorage.getItem('cf_streak')||'0',10); $('#rib').html('🔥 '+s+' Day Streak');
+          load();
+        });
+      </script>
+
+    </body>
+</html>

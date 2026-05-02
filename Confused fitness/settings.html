@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="./styles.css"/>
+        <title>Settings - Confused Fitness</title>
+    </head>
+    <body>
+
+      <header class="top">
+        <div class="brand">
+          <div class="mark">CF</div>
+          <div><h1>Confused Fitness</h1><p>CONFUSED.INC</p></div>
+        </div>
+        <div class="topR">
+          <button class="btnLog" id="logBtn">Log</button>
+          <div class="rib" id="rib">🔥 0 Day Streak</div>
+        </div>
+      </header>
+
+      <div class="lay">
+
+        <aside class="side">
+          <a href="homepage.html">Home</a>
+          <a href="favorites.html">Favorites</a>
+          <a href="add work.html">Add Work</a>
+          <a href="edit work.html">Edit Work</a>
+          <a href="calendar.html">Calendar</a>
+          <a href="account.html">Account</a>
+          <a href="settings.html" class="on">Settings</a>
+        </aside>
+
+        <main style="flex:1; padding:24px; display:flex; flex-direction:column; gap:16px;">
+
+          <div style="background:var(--pnl); border:1px solid var(--bdr); padding:24px;">
+            <div class="lab">Data</div>
+            <h2 style="font-size:22px; font-weight:800; margin:6px 0 8px;">Reset App Data</h2>
+            <p style="color:var(--dim); font-size:13px; line-height:1.6; margin-bottom:16px;">Clears your custom exercises, edits, logs, schedule, favorites, and streak. Cannot be undone.</p>
+            <button class="btnGh" id="btnReset">Wipe Everything</button>
+          </div>
+
+          <div style="background:var(--pnl); border:1px solid var(--bdr); padding:24px;">
+            <div class="lab">About</div>
+            <p style="color:var(--dim); font-size:13px; line-height:1.6; margin-top:8px;">Confused Fitness · CONFUSED.INC · v0.1</p>
+          </div>
+
+        </main>
+      </div>
+
+      <script>
+        $(function () {
+          $('#btnReset').on('click',function(){
+            if(!confirm('Wipe all app data? This cannot be undone.')) return;
+            ['cf_ex','cf_log','cf_sched','cf_favs','cf_streak','cf_streak_last','cf_quote_idx'].forEach(function(k){localStorage.removeItem(k);});
+            alert('Cleared.'); window.location.href='homepage.html';
+          });
+          $('#logBtn').on('click',function(){window.location.href='login.html';});
+          const s=parseInt(localStorage.getItem('cf_streak')||'0',10); $('#rib').html('🔥 '+s+' Day Streak');
+        });
+      </script>
+
+    </body>
+</html>

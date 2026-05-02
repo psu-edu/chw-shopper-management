@@ -12,10 +12,7 @@
       <header class="top">
         <div class="brand">
           <div class="mark">CF</div>
-          <div>
-            <h1>Confused Fitness</h1>
-            <p>CONFUSED.INC</p>
-          </div>
+          <div><h1>Confused Fitness</h1><p>CONFUSED.INC</p></div>
         </div>
         <div class="topR">
           <button class="btnLog" id="logBtn">Login</button>
@@ -27,12 +24,12 @@
 
         <aside class="side">
           <a href="homepage.html" class="on">Home</a>
-          <a href="favs.html">Favorites</a>
-          <a href="add-work.html">Add Work</a>
-          <a href="edit-work.html">Edit Work</a>
-          <a href="cal.html">Calendar</a>
+          <a href="favorites.html">Favorites</a>
+          <a href="add work.html">Add Work</a>
+          <a href="edit work.html">Edit Work</a>
+          <a href="calendar.html">Calendar</a>
           <a href="account.html">Account</a>
-          <a href="set.html">Settings</a>
+          <a href="settings.html">Settings</a>
         </aside>
 
         <main class="main">
@@ -44,7 +41,7 @@
           </div>
 
           <div class="exC t">
-            <div class="lab">Today's Workout</div>
+            <div class="lab" id="lab1">Today's Workout</div>
             <div class="exN" id="ex1N">no plan yet</div>
             <div class="exM" id="ex1M">go add one already</div>
             <div class="exS"><span id="ex1S">—</span><span id="ex1W"></span></div>
@@ -76,7 +73,7 @@
             <div class="stD"></div>
             <div class="st"><div class="stV" id="favs">0</div><div class="stL">Favorites</div></div>
             <div class="stD"></div>
-            <div class="st"><div class="stV"><span class="a" id="pr">—</span></div><div class="stL">Last 7 Days</div></div>
+            <div class="st"><div class="stV"><span class="a" id="pr">0</span></div><div class="stL">Last 7 Days</div></div>
           </div>
 
         </main>
@@ -84,56 +81,141 @@
 
       <script>
         $(function () {
-          // placeholder data — wire to JSON later via $.getJSON
-          const today = new Date(); const yr = today.getFullYear(); const mo = today.getMonth(); const day = today.getDate();
-          const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          const LS='cf_ex'; const LG='cf_log'; const SCH='cf_sched'; const LF='cf_favs'; const STK='cf_streak'; const STK_LAST='cf_streak_last';
+          const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+          const today=new Date(); let viewYr=today.getFullYear(); let viewMo=today.getMonth();
 
-          // sample workout days (red on calendar) — replace with data from sched JSON
-          const wo = [2, 4, 5, 7, 9, 12, 14, 16, 18, 20, 21, 23, 24, 26, 27, 28];
+          function dayKey(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+          function todayKey(){return dayKey(today.getFullYear(),today.getMonth(),today.getDate());}
+          function dateFromKey(k){const p=k.split('-');return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
+          function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
+          function prettyKey(k){const d=dateFromKey(k); const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; return days[d.getDay()]+' '+(d.getMonth()+1)+'/'+d.getDate();}
 
-          // sample quotes — could pull from JSON or a public API later
-          const qs = [
-            { t: "The only bad workout is the one that didn't happen.", a: "Anonymous" },
-            { t: "Discipline weighs ounces. Regret weighs tons.", a: "Jim Rohn" },
-            { t: "Suns out guns out, weather permitting.", a: "Confused Fitness" },
-            { t: "You don't have to be extreme. Just consistent.", a: "Anonymous" }
+          const qs=[
+            {t:"The only bad workout is the one that didn't happen.",a:"Anonymous"},
+            {t:"Discipline weighs ounces. Regret weighs tons.",a:"Jim Rohn"},
+            {t:"Suns out guns out, weather permitting.",a:"Confused Fitness"},
+            {t:"You don't have to be extreme. Just consistent.",a:"Anonymous"},
+            {t:"Strength does not come from winning. It comes from struggle.",a:"Arnold Schwarzenegger"},
+            {t:"The body achieves what the mind believes.",a:"Napoleon Hill"},
+            {t:"Sweat is just fat crying.",a:"Anonymous"},
+            {t:"Don't count the days. Make the days count.",a:"Muhammad Ali"},
+            {t:"Take care of your body. It's the only place you have to live.",a:"Jim Rohn"},
+            {t:"Excuses don't burn calories.",a:"Anonymous"},
+            {t:"Fall in love with the process and the results will come.",a:"Eric Thomas"},
+            {t:"Showing up is half the battle. The other half is showing up tomorrow.",a:"Anonymous"},
+            {t:"If it doesn't challenge you, it doesn't change you.",a:"Fred DeVito"},
+            {t:"The pain you feel today will be the strength you feel tomorrow.",a:"Anonymous"},
+            {t:"Train insane or remain the same.",a:"Jillian Michaels"},
+            {t:"Small sessions still count. Keep the streak moving.",a:"Confused Fitness"},
+            {t:"You are one workout away from a good mood.",a:"Anonymous"},
+            {t:"Slow progress is still progress.",a:"Anonymous"},
+            {t:"The hardest lift of all is lifting your butt off the couch.",a:"Anonymous"},
+            {t:"What hurts today makes you stronger tomorrow.",a:"Jay Cutler"},
+            {t:"Rome wasn't built in a day. Neither was anyone's physique.",a:"Anonymous"},
+            {t:"Don't limit your challenges. Challenge your limits.",a:"Anonymous"},
+            {t:"The clock is going to tick anyway. Use it.",a:"Confused Fitness"},
+            {t:"Consistency beats intensity. Always.",a:"Anonymous"},
+            {t:"Train the plan, then let the plan train you.",a:"Confused Fitness"}
           ];
 
-          function buildCal() {
-            $('#calT').text(months[mo] + ' ' + yr);
-            const $g = $('#calG'); $g.find('.d').remove();
-            const first = new Date(yr, mo, 1).getDay(); const len = new Date(yr, mo + 1, 0).getDate(); const prev = new Date(yr, mo, 0).getDate();
+          function loadLogs(){try{return JSON.parse(localStorage.getItem(LG)||'{}');}catch(e){return{};}}
+          function loadSched(){try{return JSON.parse(localStorage.getItem(SCH)||'{}');}catch(e){return{};}}
+          function loadFavs(){try{return JSON.parse(localStorage.getItem(LF)||'[]');}catch(e){return[];}}
 
-            for (let i = first - 1; i >= 0; i--) { $g.append($('<div class="d mu">').text(prev - i)); }
-            for (let i = 1; i <= len; i++) {
-              const $d = $('<div class="d">').text(i);
-              if (wo.indexOf(i) !== -1) $d.addClass('wo');
-              if (i === day) $d.addClass('td');
+          function logDays(){
+            const logs=loadLogs(); const days={};
+            Object.keys(logs).forEach(function(exId){(logs[exId]||[]).forEach(function(entry){const d=new Date(entry.t); const k=dayKey(d.getFullYear(),d.getMonth(),d.getDate()); days[k]=true;});});
+            return days;
+          }
+
+          function computeStreak(){
+            const days=logDays(); let cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+            const tk=dayKey(cursor.getFullYear(),cursor.getMonth(),cursor.getDate());
+            if(!days[tk]) cursor.setDate(cursor.getDate()-1);
+            let count=0;
+            while(true){const k=dayKey(cursor.getFullYear(),cursor.getMonth(),cursor.getDate()); if(days[k]){count++; cursor.setDate(cursor.getDate()-1);} else break;}
+            localStorage.setItem(STK,String(count)); localStorage.setItem(STK_LAST,todayKey());
+            return count;
+          }
+
+          function nextSet(exId){const logs=loadLogs(); const arr=logs[exId]||[]; if(!arr.length) return {s:3,r:8,w:0,isNew:true}; const last=arr[arr.length-1]; return {s:last.s,r:last.r,w:last.w,isNew:false};}
+          function findEx(allEx,id){return allEx.find(function(x){return x.id===id;});}
+
+          function fillCard(prefix,x,when){
+            const ns=nextSet(x.id);
+            $('#'+prefix+'N').text(x.name);
+            $('#'+prefix+'M').text(cap(x.muscle)+' · '+cap(x.equipment)+(when?(' · '+when):''));
+            $('#'+prefix+'S').text(ns.s+' × '+ns.r);
+            $('#'+prefix+'W').text(ns.w?(ns.w+' lb'):(ns.isNew?'first time':'bw'));
+          }
+
+          function loadTodayAndNext(allEx){
+            const sched=loadSched(); const tk=todayKey(); const todayList=sched[tk]||[];
+            const futureKeys=Object.keys(sched).filter(function(k){return k>tk&&(sched[k]||[]).length;}).sort();
+            const nextKey=futureKeys.length?futureKeys[0]:null;
+
+            if(todayList.length){
+              const x1=findEx(allEx,todayList[0]); if(x1) fillCard('ex1',x1,null);
+              if(todayList.length>1){const x2=findEx(allEx,todayList[1]); if(x2) fillCard('ex2',x2,'later today');}
+              else if(nextKey){const x2=findEx(allEx,sched[nextKey][0]); if(x2) fillCard('ex2',x2,prettyKey(nextKey));}
+              else {$('#ex2N').text('nothing else scheduled'); $('#ex2M').text('open the calendar to plan ahead'); $('#ex2S').text('—'); $('#ex2W').text('');}
+            } else if(nextKey){
+              $('#lab1').text('Next Workout · '+prettyKey(nextKey));
+              const x1=findEx(allEx,sched[nextKey][0]); if(x1) fillCard('ex1',x1,null);
+              if((sched[nextKey]||[]).length>1){const x2=findEx(allEx,sched[nextKey][1]); if(x2) fillCard('ex2',x2,prettyKey(nextKey));}
+              else {$('#ex2N').text('—'); $('#ex2M').text('—'); $('#ex2S').text('—'); $('#ex2W').text('');}
+            } else {
+              $('#ex1N').text('no plan yet'); $('#ex1M').text('open the calendar to schedule a workout'); $('#ex1S').text('—'); $('#ex1W').text('');
+              $('#ex2N').text('—'); $('#ex2M').text('—'); $('#ex2S').text('—'); $('#ex2W').text('');
+            }
+          }
+
+          function buildCal(){
+            const sched=loadSched(); $('#calT').text(months[viewMo]+' '+viewYr);
+            const $g=$('#calG'); $g.find('.d').remove();
+            const first=new Date(viewYr,viewMo,1).getDay(); const len=new Date(viewYr,viewMo+1,0).getDate(); const prev=new Date(viewYr,viewMo,0).getDate();
+            for(let i=first-1;i>=0;i--){$g.append($('<div class="d mu">').text(prev-i));}
+            for(let i=1;i<=len;i++){
+              const k=dayKey(viewYr,viewMo,i); const $d=$('<div class="d">').text(i);
+              if(sched[k]&&sched[k].length) $d.addClass('wo');
+              if(viewYr===today.getFullYear()&&viewMo===today.getMonth()&&i===today.getDate()) $d.addClass('td');
               $g.append($d);
             }
-            const used = first + len; const trail = (7 - (used % 7)) % 7;
-            for (let i = 1; i <= trail; i++) { $g.append($('<div class="d mu">').text(i)); }
+            const used=first+len; const trail=(7-(used%7))%7;
+            for(let i=1;i<=trail;i++){$g.append($('<div class="d mu">').text(i));}
           }
 
-          function pickQuote() { const q = qs[Math.floor(Math.random() * qs.length)]; $('#qT').text(q.t); $('#qA').text('— ' + q.a); }
-
-          function loadStats() {
-            // fake stats for now — swap for $.getJSON('user.json') later
-            $('#wkD').text(3); $('#wkT').text(5); $('#strk').text(12); $('#sets').text(142); $('#favs').text(8); $('#pr').text('PR');
-            $('#rib').html('🔥 12 Day Streak');
+          function loadStats(){
+            const logs=loadLogs(); const favs=loadFavs(); const sched=loadSched();
+            let totalSets=0; Object.keys(logs).forEach(function(id){totalSets+=(logs[id]||[]).length;});
+            const sevenAgo=Date.now()-(7*24*60*60*1000); let last7=0;
+            Object.keys(logs).forEach(function(id){(logs[id]||[]).forEach(function(e){if(e.t>=sevenAgo) last7++;});});
+            const dow=today.getDay(); const weekStart=new Date(today.getFullYear(),today.getMonth(),today.getDate()-dow);
+            const days=logDays(); let wkDone=0; let wkTarget=0;
+            for(let i=0;i<7;i++){const d=new Date(weekStart); d.setDate(weekStart.getDate()+i); const k=dayKey(d.getFullYear(),d.getMonth(),d.getDate()); if(sched[k]&&sched[k].length) wkTarget++; if(days[k]) wkDone++;}
+            if(wkTarget<1) wkTarget=5;
+            const streak=computeStreak();
+            $('#wkD').text(wkDone); $('#wkT').text(wkTarget); $('#strk').text(streak); $('#sets').text(totalSets); $('#favs').text(favs.length); $('#pr').text(last7);
+            $('#rib').html('🔥 '+streak+' Day Streak');
           }
 
-          function loadToday() {
-            // placeholder — replace with $.getJSON('schedule.json') keyed to today
-            $('#ex1N').text('Bench Press'); $('#ex1M').text('Chest · Barbell'); $('#ex1S').text('4 × 8'); $('#ex1W').text('185 lb');
-            $('#ex2N').text('Overhead Press'); $('#ex2M').text('Shoulders · Barbell'); $('#ex2S').text('3 × 10'); $('#ex2W').text('95 lb');
+          function pickQuote(){const seed=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate(); const idx=seed%qs.length; const q=qs[idx]; $('#qT').text(q.t); $('#qA').text('— '+q.a);}
+
+          let allEx=[];
+          function loadEx(then){
+            $.getJSON('exercises.json',function(data){
+              const base=data.exercises; const stored=JSON.parse(localStorage.getItem(LS)||'{}'); const customs=stored.custom||[]; const edits=stored.edits||{};
+              allEx=base.map(function(x){return edits[x.id]?Object.assign({},x,edits[x.id]):x;}).filter(function(x){return !x._deleted;});
+              allEx=allEx.concat(customs); if(then) then();
+            }).fail(function(){const stored=JSON.parse(localStorage.getItem(LS)||'{}'); allEx=stored.custom||[]; if(then) then();});
           }
 
-          $('#calP').on('click', function () { alert('cal nav not wired yet, chill'); });
-          $('#calNx').on('click', function () { alert('cal nav not wired yet, chill'); });
-          $('#logBtn').on('click', function () { window.location.href = 'login.html'; });
+          $('#calP').on('click',function(){viewMo--; if(viewMo<0){viewMo=11; viewYr--;} buildCal();});
+          $('#calNx').on('click',function(){viewMo++; if(viewMo>11){viewMo=0; viewYr++;} buildCal();});
+          $('#logBtn').on('click',function(){window.location.href='login.html';});
 
-          buildCal(); pickQuote(); loadStats(); loadToday();
+          buildCal(); pickQuote(); loadStats(); loadEx(function(){loadTodayAndNext(allEx);});
         });
       </script>
 
